@@ -1,0 +1,371 @@
+
+.manage-interviews-page {
+  width: 100%;
+}
+
+.interviews-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 24px;
+}
+
+.interviews-heading h2 {
+  color: #172554;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.interviews-heading p {
+  color: #64748b;
+  font-size: 14px;
+  margin: 0;
+}
+
+.add-interview-btn,
+.interview-save-btn {
+  border: none;
+  background: #2563eb;
+  color: white;
+  border-radius: 8px;
+  padding: 11px 17px;
+  font-weight: 600;
+}
+
+.add-interview-btn:hover,
+.interview-save-btn:hover {
+  background: #1d4ed8;
+}
+
+.interview-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 25px;
+}
+
+.interview-stat-card {
+  position: relative;
+  background: white;
+  border: 1px solid #e8edf5;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.interview-stat-card span {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.interview-stat-card h3 {
+  color: #172554;
+  font-size: 27px;
+  font-weight: 700;
+  margin: 9px 0 0;
+}
+
+.interview-stat-card > i {
+  position: absolute;
+  right: 20px;
+  top: 22px;
+  color: #2563eb;
+  font-size: 24px;
+  opacity: 0.7;
+}
+
+.interviews-table-card {
+  background: white;
+  border: 1px solid #e8edf5;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.interviews-toolbar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.interviews-search {
+  position: relative;
+  flex: 1;
+}
+
+.interviews-search i {
+  position: absolute;
+  left: 13px;
+  top: 12px;
+  color: #94a3b8;
+}
+
+.interviews-search input,
+.interviews-toolbar select {
+  height: 42px;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  padding: 8px 12px;
+  outline: none;
+  background: white;
+  color: #334155;
+}
+
+.interviews-search input {
+  width: 100%;
+  padding-left: 38px;
+}
+
+.interviews-search input:focus,
+.interviews-toolbar select:focus {
+  border-color: #2563eb;
+}
+
+.admin-interviews-table {
+  min-width: 850px;
+  margin-bottom: 0;
+}
+
+.admin-interviews-table thead th {
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 14px;
+  border-bottom: 1px solid #e8edf5;
+}
+
+.admin-interviews-table tbody td {
+  padding: 16px 14px;
+  font-size: 13px;
+  color: #475569;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.interview-student-name,
+.interview-company {
+  color: #172554;
+  font-weight: 700;
+}
+
+.interview-enrollment,
+.interview-role,
+.interview-time {
+  color: #64748b;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.interview-status {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.interview-status.scheduled {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.interview-status.completed {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.interview-status.cancelled {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.interview-actions {
+  display: flex;
+  gap: 7px;
+}
+
+.interview-actions button {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+}
+
+.interview-view-btn {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.interview-delete-btn {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.interviews-empty {
+  text-align: center;
+  padding: 35px !important;
+  color: #94a3b8 !important;
+}
+
+.interview-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+
+.interview-modal {
+  width: 100%;
+  max-width: 680px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 14px;
+  padding: 25px;
+}
+
+.interview-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 22px;
+}
+
+.interview-modal-header h4 {
+  color: #172554;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.interview-modal-header p {
+  color: #64748b;
+  font-size: 13px;
+  margin: 0;
+}
+
+.interview-close-btn {
+  border: none;
+  background: #f1f5f9;
+  color: #475569;
+  width: 32px;
+  height: 32px;
+  border-radius: 7px;
+  font-size: 23px;
+}
+
+.interview-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.interview-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.interview-form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.interview-form-group label,
+.interview-status-update label {
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.interview-form-group input,
+.interview-form-group select,
+.interview-status-update select {
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  padding: 10px 12px;
+  outline: none;
+  font-size: 13px;
+  background: white;
+}
+
+.interview-form-group input:focus,
+.interview-form-group select:focus,
+.interview-status-update select:focus {
+  border-color: #2563eb;
+}
+
+.interview-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.interview-cancel-btn {
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #475569;
+  border-radius: 8px;
+  padding: 10px 17px;
+}
+
+.interview-detail-list p {
+  color: #475569;
+  font-size: 14px;
+  padding: 9px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.interview-detail-list strong {
+  color: #172554;
+}
+
+.interview-status-update {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 22px;
+}
+
+@media (max-width: 992px) {
+  .interview-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .interviews-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .interview-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .interviews-toolbar {
+    flex-direction: column;
+  }
+
+  .interviews-toolbar select {
+    width: 100%;
+  }
+
+  .interview-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .interview-form-group.full-width {
+    grid-column: auto;
+  }
+
+  .interview-modal {
+    padding: 18px;
+  }
+}

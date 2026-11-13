@@ -1,0 +1,25 @@
+
+/* Fixed sidebar ke liye main content adjustment */
+
+.student-main {
+  padding-top: 28px;
+   margin-left: 120px;
+  width: calc(100% - 120px);
+  min-width: 0;
+  min-height: 100vh;
+}
+
+@media (max-width: 992px) and (min-width: 769px) {
+  .student-main {
+    margin-left: 220px;
+    width: calc(100% - 220px);
+  }
+}
+
+@media (max-width: 768px) {
+  .student-main {
+    margin-left: 0;
+    width: 100%;
+    padding-top: 28px;
+  }
+}

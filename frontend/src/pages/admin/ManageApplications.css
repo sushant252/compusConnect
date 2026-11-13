@@ -1,0 +1,339 @@
+
+.manage-applications-page {
+  width: 100%;
+}
+
+.applications-heading {
+  margin-bottom: 24px;
+}
+
+.applications-heading h2 {
+  color: #172554;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.applications-heading p {
+  color: #64748b;
+  font-size: 14px;
+  margin: 0;
+}
+
+.application-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 25px;
+}
+
+.application-stat-card {
+  background: white;
+  border: 1px solid #e8edf5;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.application-stat-card span {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.application-stat-card h3 {
+  font-size: 27px;
+  font-weight: 700;
+  color: #172554;
+  margin: 8px 0 0;
+}
+
+.application-stat-icon {
+  width: 43px;
+  height: 43px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+}
+
+.application-stat-icon.blue {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.application-stat-icon.orange {
+  background: #fff7ed;
+  color: #ea580c;
+}
+
+.application-stat-icon.purple {
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+
+.application-stat-icon.green {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.applications-table-card {
+  background: white;
+  border: 1px solid #e8edf5;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.applications-toolbar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.applications-search {
+  position: relative;
+  flex: 1;
+}
+
+.applications-search i {
+  position: absolute;
+  left: 13px;
+  top: 12px;
+  color: #94a3b8;
+}
+
+.applications-search input,
+.applications-toolbar select {
+  height: 42px;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  padding: 8px 12px;
+  outline: none;
+  color: #334155;
+  background: white;
+}
+
+.applications-search input {
+  width: 100%;
+  padding-left: 38px;
+}
+
+.applications-search input:focus,
+.applications-toolbar select:focus {
+  border-color: #2563eb;
+}
+
+.applications-admin-table {
+  min-width: 850px;
+  margin-bottom: 0;
+}
+
+.applications-admin-table thead th {
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 12px;
+  text-transform: uppercase;
+  padding: 14px;
+  border-bottom: 1px solid #e8edf5;
+}
+
+.applications-admin-table tbody td {
+  padding: 16px 14px;
+  font-size: 13px;
+  color: #475569;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.application-student-name,
+.application-company {
+  color: #172554;
+  font-weight: 700;
+}
+
+.application-enrollment,
+.application-job {
+  color: #64748b;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.application-status {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.application-status.pending {
+  color: #c2410c;
+  background: #ffedd5;
+}
+
+.application-status.shortlisted {
+  color: #6d28d9;
+  background: #ede9fe;
+}
+
+.application-status.rejected {
+  color: #b91c1c;
+  background: #fee2e2;
+}
+
+.application-status.selected {
+  color: #15803d;
+  background: #dcfce7;
+}
+
+.application-view-btn {
+  border: none;
+  background: #eff6ff;
+  color: #2563eb;
+  width: 33px;
+  height: 33px;
+  border-radius: 7px;
+}
+
+.applications-empty {
+  text-align: center;
+  padding: 35px !important;
+  color: #94a3b8 !important;
+}
+
+.application-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+}
+
+.application-modal {
+  width: 100%;
+  max-width: 550px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 14px;
+  padding: 25px;
+}
+
+.application-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 22px;
+}
+
+.application-modal-header h4 {
+  color: #172554;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.application-modal-header p {
+  color: #64748b;
+  font-size: 13px;
+  margin: 0;
+}
+
+.application-modal-close {
+  border: none;
+  background: #f1f5f9;
+  color: #475569;
+  width: 32px;
+  height: 32px;
+  border-radius: 7px;
+  font-size: 23px;
+}
+
+.application-detail-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.application-detail-content div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.application-detail-content span {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.application-detail-content strong {
+  color: #334155;
+  font-size: 14px;
+}
+
+.application-status-update {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 25px;
+}
+
+.application-status-update label {
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.application-status-update select {
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  padding: 10px;
+  outline: none;
+}
+
+.application-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 22px;
+}
+
+.application-modal-footer button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 7px;
+  padding: 10px 20px;
+  font-weight: 600;
+}
+
+@media (max-width: 992px) {
+  .application-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .application-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .applications-toolbar {
+    flex-direction: column;
+  }
+
+  .applications-toolbar select {
+    width: 100%;
+  }
+
+  .application-detail-content {
+    grid-template-columns: 1fr;
+  }
+
+  .application-modal {
+    padding: 18px;
+  }
+}

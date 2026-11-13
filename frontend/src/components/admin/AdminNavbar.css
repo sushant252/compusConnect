@@ -1,0 +1,274 @@
+.admin-topbar {
+  position: fixed;
+  top: 0;
+  left: 255px;
+  right: 0;
+  height: 78px;
+  background: #ffffff;
+  border-bottom: 1px solid #edf0f6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  z-index: 999;
+  box-sizing: border-box;
+  gap: 15px;
+}
+
+.admin-navbar-page-info h5 {
+  color: #202b45;
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.admin-navbar-page-info p {
+  color: #929bad;
+  font-size: 11px;
+  margin: 0;
+}
+
+.admin-navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.admin-search-box {
+  width: 210px;
+  height: 39px;
+  background: #f5f7fb;
+  border: 1px solid #edf0f6;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 12px;
+}
+
+.admin-search-box span {
+  font-size: 21px;
+  color: #8792a8;
+}
+
+.admin-search-box input {
+  width: 100%;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #26334e;
+  font-size: 12px;
+}
+
+.admin-notification-wrapper {
+  position: relative;
+}
+
+.admin-notification-btn {
+  position: relative;
+  width: 39px;
+  height: 39px;
+  border: 1px solid #edf0f6;
+  border-radius: 10px;
+  background: white;
+  color: #53617a;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.admin-notification-btn:hover {
+  background: #f5f7fb;
+}
+
+.admin-notification-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  height: 7px;
+  width: 7px;
+  background: #ed5b65;
+  border: 1px solid white;
+  border-radius: 50%;
+}
+
+.admin-notification-dropdown {
+  position: absolute;
+  top: 52px;
+  right: 0;
+  width: 310px;
+  max-width: calc(100vw - 30px);
+  background: white;
+  border: 1px solid #edf0f6;
+  border-radius: 12px;
+  box-shadow: 0 12px 35px rgba(30, 45, 80, 0.15);
+  z-index: 1100;
+  overflow: hidden;
+  animation: adminDropdownShow 0.2s ease;
+}
+
+@keyframes adminDropdownShow {
+  from {
+    opacity: 0;
+    transform: translateY(-7px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.admin-notification-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  border-bottom: 1px solid #edf0f6;
+}
+
+.admin-notification-header strong {
+  color: #26334e;
+  font-size: 13px;
+}
+
+.admin-notification-header span {
+  color: #4168d5;
+  background: #edf2ff;
+  padding: 4px 8px;
+  border-radius: 15px;
+  font-size: 10px;
+}
+
+.admin-notification-item {
+  display: flex;
+  gap: 11px;
+  padding: 14px;
+  border-bottom: 1px solid #f0f2f6;
+}
+
+.admin-notification-icon {
+  width: 35px;
+  height: 35px;
+  background: #eef2ff;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.admin-notification-item strong {
+  font-size: 11px;
+  color: #26334e;
+}
+
+.admin-notification-item p {
+  font-size: 10px;
+  color: #8991a4;
+  margin: 4px 0;
+}
+
+.admin-notification-item small {
+  font-size: 9px;
+  color: #a1a9b8;
+}
+
+.admin-notification-footer {
+  padding: 12px;
+  text-align: center;
+  color: #8991a4;
+  font-size: 10px;
+}
+
+.admin-navbar-profile {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding-left: 16px;
+  border-left: 1px solid #edf0f6;
+}
+
+.admin-navbar-avatar {
+  width: 37px;
+  height: 37px;
+  border-radius: 50%;
+  background: #e5ebff;
+  color: #3456b3;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.admin-navbar-profile-info strong {
+  display: block;
+  color: #26334e;
+  font-size: 11px;
+}
+
+.admin-navbar-profile-info small {
+  display: block;
+  color: #929bad;
+  font-size: 10px;
+  margin-top: 3px;
+}
+
+/* Tablet */
+
+@media (max-width: 992px) {
+  .admin-topbar {
+    left: 220px;
+    padding: 0 18px;
+  }
+
+  .admin-search-box {
+    width: 165px;
+  }
+
+  .admin-navbar-actions {
+    gap: 12px;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 768px) {
+  .admin-topbar {
+    left: 0;
+    height: 70px;
+    padding: 0 12px 0 70px;
+  }
+
+  .admin-navbar-page-info h5 {
+    font-size: 14px;
+  }
+
+  .admin-navbar-page-info p {
+    font-size: 9px;
+  }
+
+  .admin-search-box {
+    display: none;
+  }
+
+  .admin-navbar-actions {
+    gap: 9px;
+  }
+
+  .admin-navbar-profile {
+    padding-left: 9px;
+  }
+
+  .admin-navbar-profile-info {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .admin-topbar {
+    padding-right: 8px;
+  }
+
+  .admin-navbar-actions {
+    gap: 6px;
+  }
+}

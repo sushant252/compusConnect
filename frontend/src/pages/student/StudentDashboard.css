@@ -1,0 +1,350 @@
+
+/* STUDENT DASHBOARD */
+
+
+/* ================================
+   STUDENT DASHBOARD PAGE
+================================ */
+
+.dashboard-content {
+  padding: 28px 30px;
+  max-width: 1500px;
+  margin: 0 auto;
+  width: 100%;
+  background: #f5f7fb;
+}
+
+/* Welcome Banner */
+.welcome-banner {
+  background: linear-gradient(115deg, #2855d9, #5279ed);
+  color: white;
+  border-radius: 16px;
+  padding: 32px 35px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  overflow: hidden;
+  box-shadow: 0 8px 22px rgba(40, 85, 217, 0.12);
+}
+
+.welcome-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+.welcome-banner h2 {
+  font-size: 26px;
+  font-weight: 700;
+  margin-top: 12px;
+  margin-bottom: 10px;
+}
+
+.welcome-banner p {
+  color: #e2eaff;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.welcome-banner .btn {
+  border-radius: 7px;
+  padding: 9px 16px;
+  font-size: 13px;
+}
+
+.welcome-illustration {
+  font-size: 85px;
+  padding-right: 35px;
+}
+
+/* Section Headings */
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 17px;
+}
+
+.section-heading h5 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #172746;
+  margin: 0;
+}
+
+.section-heading span,
+.section-heading a {
+  font-size: 12px;
+  color: #687891;
+  text-decoration: none;
+}
+
+.section-heading a {
+  color: #2855d9;
+  font-weight: 600;
+}
+
+.section-heading a:hover {
+  color: #173da8;
+}
+
+/* Statistics Cards */
+.stat-card {
+  background: white;
+  padding: 22px;
+  border: 1px solid #edf0f5;
+  border-radius: 13px;
+  height: 100%;
+  transition: 0.25s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 22px rgba(30, 50, 90, 0.08);
+}
+
+.stat-icon {
+  width: 43px;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.stat-icon.blue {
+  background: #e8efff;
+}
+
+.stat-icon.purple {
+  background: #f0eaff;
+}
+
+.stat-icon.green {
+  background: #e4f8ed;
+}
+
+.stat-icon.orange {
+  background: #fff1df;
+}
+
+.stat-card p {
+  color: #718096;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+.stat-card h3 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #172746;
+  margin-bottom: 5px;
+}
+
+.stat-card small {
+  color: #98a2b3;
+  font-size: 11px;
+}
+
+/* Recommended Job Cards */
+.job-card {
+  background: white;
+  border: 1px solid #edf0f5;
+  border-radius: 13px;
+  padding: 21px;
+  height: 100%;
+  transition: 0.25s ease;
+}
+
+.job-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 22px rgba(30, 50, 90, 0.08);
+  border-color: #d8e2ff;
+}
+
+.company-logo {
+  height: 45px;
+  width: 45px;
+  border-radius: 11px;
+  background: #e9efff;
+  color: #2855d9;
+  display: grid;
+  place-items: center;
+  font-size: 19px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.job-card h6 {
+  color: #172746;
+  font-size: 14px;
+}
+
+.job-details {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: #718096;
+  font-size: 12px;
+}
+
+.job-card hr {
+  border-color: #edf0f5;
+  margin: 17px 0;
+}
+
+.job-card .btn {
+  font-size: 11px;
+  border-radius: 6px;
+  padding: 6px 11px;
+}
+
+/* Recent Activity Table */
+.activity-card {
+  background: white;
+  border: 1px solid #edf0f5;
+  border-radius: 13px;
+  padding: 14px 18px;
+  overflow: hidden;
+}
+
+.activity-card .table {
+  margin-bottom: 0;
+}
+
+.activity-card th {
+  font-size: 11px;
+  color: #77849a;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 14px 12px;
+  background: #fafbfe;
+}
+
+.activity-card td {
+  font-size: 12px;
+  color: #46546b;
+  white-space: nowrap;
+  padding: 15px 12px;
+}
+
+.activity-card tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Application Status */
+.status-badge {
+  display: inline-block;
+  padding: 6px 11px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.status-badge.shortlisted {
+  background: #e3f8eb;
+  color: #16834b;
+}
+
+.status-badge.pending {
+  background: #fff2d9;
+  color: #a66a00;
+}
+
+.status-badge.rejected {
+  background: #ffe6e6;
+  color: #c33b3b;
+}
+
+/* Footer */
+.dashboard-footer {
+  text-align: center;
+  color: #98a2b3;
+  font-size: 11px;
+  padding: 30px 0 5px;
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+================================ */
+
+@media (max-width: 992px) {
+  .dashboard-content {
+    padding: 22px 20px;
+  }
+
+  .welcome-illustration {
+    font-size: 65px;
+    padding-right: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-content {
+    padding: 18px 12px;
+  }
+
+  .welcome-banner {
+    padding: 24px 20px;
+  }
+
+  .welcome-banner h2 {
+    font-size: 20px;
+  }
+
+  .welcome-banner p {
+    font-size: 12px;
+  }
+
+  .welcome-illustration {
+    font-size: 45px;
+    padding-right: 0;
+  }
+
+  .section-heading h5 {
+    font-size: 15px;
+  }
+
+  .stat-card {
+    padding: 17px;
+  }
+
+  .stat-card h3 {
+    font-size: 24px;
+  }
+
+  .job-card {
+    padding: 17px;
+  }
+
+  .activity-card {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-banner {
+    padding: 20px 15px;
+  }
+
+  .welcome-banner h2 {
+    font-size: 17px;
+  }
+
+  .welcome-illustration {
+    font-size: 35px;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+  }
+
+  .section-heading span {
+    font-size: 10px;
+    text-align: right;
+  }
+}

@@ -1,0 +1,154 @@
+
+/* ================================
+   STUDENT NAVBAR
+================================ */
+
+.student-topbar {
+  position: fixed;
+  top: 0;
+  left: 255px;
+  right: 0;
+
+  height: 78px;
+  width: auto;
+
+  background: #ffffff;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 12px 30px;
+
+  border-bottom: 1px solid #e9edf4;
+  box-shadow: 0 2px 10px rgba(20, 40, 80, 0.04);
+
+  z-index: 999;
+  box-sizing: border-box;
+}
+
+/* Navbar Title */
+.student-topbar h5 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #172746;
+  margin: 0;
+}
+
+.student-topbar small {
+  font-size: 12px;
+  color: #8491a5 !important;
+}
+
+/* Right Side */
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* Notification Button */
+.notification-btn {
+  position: relative;
+
+  width: 42px;
+  height: 42px;
+
+  border: 1px solid #edf0f5;
+  border-radius: 11px;
+
+  background: #f8faff;
+  color: #344665;
+
+  font-size: 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.notification-btn:hover {
+  background: #eaf0ff;
+  color: #2855d9;
+  border-color: #dce6ff;
+  transform: translateY(-2px);
+}
+
+.notification-btn:focus-visible {
+  outline: 2px solid #5279ed;
+  outline-offset: 3px;
+}
+
+/* Notification Red Dot */
+.notification-dot {
+  position: absolute;
+
+  height: 8px;
+  width: 8px;
+
+  background: #ef5350;
+  border: 2px solid #ffffff;
+
+  border-radius: 50%;
+
+  top: 7px;
+  right: 7px;
+}
+
+/* ================================
+   RESPONSIVE NAVBAR
+================================ */
+
+@media (max-width: 768px) {
+  .student-topbar {
+    left: 70px;
+    height: 70px;
+    padding: 10px 15px;
+  }
+
+  .student-topbar h5 {
+    font-size: 14px;
+  }
+
+  .student-topbar small {
+    font-size: 10px;
+  }
+
+  .notification-btn {
+    width: 37px;
+    height: 37px;
+    font-size: 19px;
+  }
+}
+
+@media (max-width: 480px) {
+  .student-topbar {
+    padding: 10px;
+  }
+
+  .student-topbar h5 {
+    font-size: 13px;
+  }
+
+  .student-topbar small {
+    font-size: 9px;
+  }
+}
+@media (max-width: 992px) and (min-width: 769px) {
+  .student-topbar {
+    left: 220px;
+  }
+}
+
+@media (max-width: 768px) {
+  .student-topbar {
+    left: 0;
+  }
+
+  .navbar-page-info {
+    margin-left: 55px;
+  }
+}
