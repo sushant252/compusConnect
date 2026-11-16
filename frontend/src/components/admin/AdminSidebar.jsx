@@ -1,11 +1,22 @@
+
 import { useState } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import "./AdminSidebar.css";
 
 function AdminSidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const { logout, user } = useAuth();
+  const navigate = useNavigate();
+
   const closeSidebar = () => setIsOpen(false);
+
+  const handleLogout = () => {
+    logout();
+    closeSidebar();
+    navigate("/login", { replace: true });
+  };
 
   const navItems = [
     { path: "/admin/dashboard", icon: "▦", label: "Dashboard" },
@@ -62,34 +73,47 @@ function AdminSidebar() {
               <span>{item.label}</span>
             </NavLink>
           ))}
-          <NavLink to="/admin/announcements" className="admin-sidebar-link">
+
+          <NavLink
+            to="/admin/announcements"
+            className="admin-sidebar-link"
+            onClick={closeSidebar}
+          >
             <i className="bi bi-megaphone"></i>
             <span>Announcements</span>
           </NavLink>
 
-            <NavLink to="/admin/notifications" className="admin-sidebar-link">
-  <i className="bi bi-bell"></i>
-  <span>Notifications</span>
-</NavLink>
+          <NavLink
+            to="/admin/notifications"
+            className="admin-sidebar-link"
+            onClick={closeSidebar}
+          >
+            <i className="bi bi-bell"></i>
+            <span>Notifications</span>
+          </NavLink>
         </nav>
 
         <div className="admin-sidebar-bottom">
           <div className="admin-mini-profile">
-            <div className="admin-avatar">AD</div>
+            <div className="admin-avatar">
+              {user?.name
+                ? user.name.split(" ").map((word) => word[0]).join("").slice(0, 2).toUpperCase()
+                : "AD"}
+            </div>
+
             <div>
-              <strong>Administrator</strong>
+              <strong>{user?.name || "Administrator"}</strong>
               <small>Super Admin</small>
             </div>
           </div>
 
-          <Link
-            to="/login"
+          <button
+            type="button"
             className="admin-sidebar-logout"
-            onClick={closeSidebar}
+            onClick={handleLogout}
           >
             <span>↪</span> Logout
-          </Link>
-
+          </button>
         </div>
       </aside>
     </>

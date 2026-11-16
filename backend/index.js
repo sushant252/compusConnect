@@ -6,6 +6,12 @@ const authRoutes = require("./routes/authRoutes");
 const { protect, adminOnly } = require("./middleware/authMiddleware");
 const companyRoutes = require("./routes/companyRoutes");
 const jobRoutes = require("./routes/jobRoutes");
+const applicationRoutes = require("./routes/applicationRoutes");
+const interviewRoutes = require("./routes/interviewRoutes");
+const announcementRoutes = require("./routes/announcementRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
+const profileRoutes = require("./routes/profileRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 dotenv.config();
 
 const app = express();
@@ -24,6 +30,18 @@ app.use("/api/auth", authRoutes);
 app.use("/api/companies", companyRoutes);
 // Job Routes
 app.use("/api/jobs", jobRoutes);
+// Application Routes
+app.use("/api/applications", applicationRoutes);
+// interview Routes
+app.use("/api/interviews", interviewRoutes);
+// Anoucement
+app.use("/api/announcements", announcementRoutes);
+// Notification Routes
+app.use("/api/notifications", notificationRoutes);
+// Profile Routes
+app.use("/api/profile", profileRoutes);
+// 
+app.use("/api/admin", adminRoutes);
 // 
 app.get("/api/admin/test", protect, adminOnly, (req, res) => {
     res.json({

@@ -1,40 +1,8 @@
 
 import { useMemo, useState } from "react";
 import AdminLayout from "../../layouts/AdminLayout";
+import API from "../../services/api";
 import "./ManageNotifications.css";
-
-const initialNotifications = [
-  {
-    id: 1,
-    title: "Placement Registration Open",
-    message:
-      "Registration for Campus Placement 2026 is now open. Complete your student profile and apply for eligible jobs.",
-    type: "Placement",
-    audience: "All Students",
-    date: "14 Nov 2026",
-    status: "Sent",
-  },
-  {
-    id: 2,
-    title: "Technical Interview Reminder",
-    message:
-      "Your technical interview preparation session is scheduled. Please check the placement portal for details.",
-    type: "Interview",
-    audience: "Computer Science",
-    date: "13 Nov 2026",
-    status: "Sent",
-  },
-  {
-    id: 3,
-    title: "New Job Opportunity",
-    message:
-      "A new job opportunity is available. Visit Browse Jobs to check eligibility and apply.",
-    type: "Job",
-    audience: "All Students",
-    date: "12 Nov 2026",
-    status: "Sent",
-  },
-];
 
 const emptyForm = {
   title: "",
@@ -44,11 +12,15 @@ const emptyForm = {
 };
 
 function ManageNotifications() {
-  const [notifications, setNotifications] = useState(initialNotifications);
+  const [notifications, setNotifications] = useState([]);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState(emptyForm);
+
+  const [sending, setSending] = useState(false);
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
 
   const filteredNotifications = useMemo(() => {
     return notifications.filter((item) => {
@@ -73,43 +45,62 @@ function ManageNotifications() {
     }));
   };
 
-  const handleSend = (e) => {
+  const handleSend = async (e) => {
     e.preventDefault();
 
     if (!form.title.trim() || !form.message.trim()) {
-      alert("Please enter the notification title and message.");
+      setError("Please enter the notification title and message.");
       return;
     }
 
-    const newNotification = {
-      id: Date.now(),
-      title: form.title.trim(),
-      message: form.message.trim(),
-      type: form.type,
-      audience: form.audience,
-      date: new Date().toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      }),
-      status: "Sent",
-    };
+    try {
+      setSending(true);
+      setError("");
+      setSuccess("");
 
-    setNotifications((previous) => [
-      newNotification,
-      ...previous,
-    ]);
+      const response = await API.post("/notifications", {
+        recipientId: "all",
+        title: form.title.trim(),
+        message: form.message.trim(),
+        type: form.type,
+      });
 
-    setForm(emptyForm);
-    setShowModal(false);
-    alert("Demo notification added successfully!");
-  };
+      const sentNotification = response.data.notifications?.[0];
 
-  const deleteNotification = (id) => {
-    if (window.confirm("Delete this notification?")) {
-      setNotifications((previous) =>
-        previous.filter((item) => item.id !== id)
+      const newNotification = {
+        id: sentNotification?._id || Date.now(),
+        title: form.title.trim(),
+        message: form.message.trim(),
+        type: form.type,
+        audience: "All Students",
+        date: new Date().toLocaleDateString("en-IN", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }),
+        status: "Sent",
+      };
+
+      setNotifications((previous) => [
+        newNotification,
+        ...previous,
+      ]);
+
+      setForm(emptyForm);
+      setShowModal(false);
+
+      setSuccess(
+        response.data.message || "Notification sent successfully!"
       );
+    } catch (err) {
+      console.error("Send notification error:", err);
+
+      setError(
+        err.response?.data?.message ||
+          "Unable to send notification. Please try again."
+      );
+    } finally {
+      setSending(false);
     }
   };
 
@@ -117,7 +108,7 @@ function ManageNotifications() {
     const classes = {
       Placement: "placement",
       Interview: "interview",
-      Job: "job",
+      Application: "job",
       General: "general",
       Important: "important",
     };
@@ -131,6 +122,7 @@ function ManageNotifications() {
       subtitle="Send and manage student notifications"
     >
       <div className="manage-notifications-page">
+
         <div className="manage-notifications-heading">
           <div>
             <h2>Manage Notifications</h2>
@@ -139,17 +131,35 @@ function ManageNotifications() {
 
           <button
             className="send-notification-btn"
-            onClick={() => setShowModal(true)}
+            onClick={() => {
+              setError("");
+              setSuccess("");
+              setShowModal(true);
+            }}
           >
             <i className="bi bi-send"></i> Send Notification
           </button>
         </div>
 
+        {success && (
+          <div className="alert alert-success">
+            {success}
+          </div>
+        )}
+
+        {error && !showModal && (
+          <div className="alert alert-danger">
+            {error}
+          </div>
+        )}
+
         <div className="manage-notification-stats">
+
           <div className="manage-notification-stat">
             <div className="manage-notification-stat-icon blue">
               <i className="bi bi-bell-fill"></i>
             </div>
+
             <div>
               <span>Total Notifications</span>
               <h3>{notifications.length}</h3>
@@ -160,10 +170,13 @@ function ManageNotifications() {
             <div className="manage-notification-stat-icon green">
               <i className="bi bi-send-check-fill"></i>
             </div>
+
             <div>
               <span>Sent Notifications</span>
               <h3>
-                {notifications.filter((item) => item.status === "Sent").length}
+                {notifications.filter(
+                  (item) => item.status === "Sent"
+                ).length}
               </h3>
             </div>
           </div>
@@ -172,6 +185,7 @@ function ManageNotifications() {
             <div className="manage-notification-stat-icon orange">
               <i className="bi bi-people-fill"></i>
             </div>
+
             <div>
               <span>All-Student Notifications</span>
               <h3>
@@ -181,11 +195,14 @@ function ManageNotifications() {
               </h3>
             </div>
           </div>
+
         </div>
 
         <div className="manage-notification-toolbar">
+
           <div className="manage-notification-search">
             <i className="bi bi-search"></i>
+
             <input
               type="text"
               placeholder="Search notifications..."
@@ -202,16 +219,21 @@ function ManageNotifications() {
             <option value="All">All Types</option>
             <option value="Placement">Placement</option>
             <option value="Interview">Interview</option>
-            <option value="Job">Job</option>
+            <option value="Application">Application</option>
             <option value="General">General</option>
             <option value="Important">Important</option>
           </select>
+
         </div>
 
         <div className="manage-notification-list">
+
           {filteredNotifications.length > 0 ? (
             filteredNotifications.map((item) => (
-              <div className="manage-notification-card" key={item.id}>
+              <div
+                className="manage-notification-card"
+                key={item.id}
+              >
                 <div
                   className={`manage-notification-icon ${getTypeClass(item.type)}`}
                 >
@@ -221,7 +243,7 @@ function ManageNotifications() {
                         ? "bi-megaphone-fill"
                         : item.type === "Interview"
                         ? "bi-calendar-check-fill"
-                        : item.type === "Job"
+                        : item.type === "Application"
                         ? "bi-briefcase-fill"
                         : item.type === "Important"
                         ? "bi-exclamation-circle-fill"
@@ -231,8 +253,10 @@ function ManageNotifications() {
                 </div>
 
                 <div className="manage-notification-details">
+
                   <div className="manage-notification-card-heading">
                     <h3>{item.title}</h3>
+
                     <span className="manage-notification-sent">
                       {item.status}
                     </span>
@@ -241,46 +265,51 @@ function ManageNotifications() {
                   <p>{item.message}</p>
 
                   <div className="manage-notification-meta">
+
                     <span className="manage-notification-type">
                       {item.type}
                     </span>
+
                     <span>
-                      <i className="bi bi-people"></i> {item.audience}
+                      <i className="bi bi-people"></i>{" "}
+                      {item.audience}
                     </span>
+
                     <span>
-                      <i className="bi bi-calendar3"></i> {item.date}
+                      <i className="bi bi-calendar3"></i>{" "}
+                      {item.date}
                     </span>
+
                   </div>
                 </div>
 
-                <button
-                  className="manage-notification-delete"
-                  title="Delete notification"
-                  onClick={() => deleteNotification(item.id)}
-                >
-                  <i className="bi bi-trash"></i>
-                </button>
               </div>
             ))
           ) : (
             <div className="manage-notification-empty">
               <i className="bi bi-bell-slash"></i>
+
               <h3>No notifications found</h3>
-              <p>Try another search or send a new notification.</p>
+
+              <p>
+                Try another search or send a new notification.
+              </p>
             </div>
           )}
+
         </div>
       </div>
 
       {showModal && (
         <div
           className="manage-notification-modal-backdrop"
-          onClick={() => setShowModal(false)}
+          onClick={() => !sending && setShowModal(false)}
         >
           <div
             className="manage-notification-modal"
             onClick={(e) => e.stopPropagation()}
           >
+
             <div className="manage-notification-modal-header">
               <div>
                 <h3>Send Notification</h3>
@@ -289,6 +318,7 @@ function ManageNotifications() {
 
               <button
                 type="button"
+                disabled={sending}
                 onClick={() => setShowModal(false)}
               >
                 <i className="bi bi-x-lg"></i>
@@ -296,7 +326,15 @@ function ManageNotifications() {
             </div>
 
             <form onSubmit={handleSend}>
+
+              {error && (
+                <div className="alert alert-danger">
+                  {error}
+                </div>
+              )}
+
               <label>Notification Title *</label>
+
               <input
                 name="title"
                 value={form.title}
@@ -307,6 +345,7 @@ function ManageNotifications() {
               />
 
               <label>Message *</label>
+
               <textarea
                 name="message"
                 value={form.message}
@@ -318,43 +357,45 @@ function ManageNotifications() {
               />
 
               <div className="manage-notification-form-row">
+
                 <div>
                   <label>Notification Type</label>
+
                   <select
                     name="type"
                     value={form.type}
                     onChange={handleChange}
                   >
-                    <option>General</option>
-                    <option>Placement</option>
-                    <option>Interview</option>
-                    <option>Job</option>
-                    <option>Important</option>
+                    <option value="General">General</option>
+                    <option value="Placement">Placement</option>
+                    <option value="Application">Application</option>
+                    <option value="Interview">Interview</option>
+                    <option value="Important">Important</option>
                   </select>
                 </div>
 
                 <div>
                   <label>Target Audience</label>
+
                   <select
                     name="audience"
                     value={form.audience}
                     onChange={handleChange}
                   >
-                    <option>All Students</option>
-                    <option>Computer Science</option>
-                    <option>Information Technology</option>
-                    <option>Electronics</option>
-                    <option>Mechanical</option>
-                    <option>Civil</option>
-                    <option>Electrical</option>
+                    <option value="All Students">
+                      All Students
+                    </option>
                   </select>
                 </div>
+
               </div>
 
               <div className="manage-notification-modal-actions">
+
                 <button
                   type="button"
                   className="manage-notification-cancel"
+                  disabled={sending}
                   onClick={() => setShowModal(false)}
                 >
                   Cancel
@@ -363,14 +404,26 @@ function ManageNotifications() {
                 <button
                   type="submit"
                   className="manage-notification-submit"
+                  disabled={sending}
                 >
-                  <i className="bi bi-send"></i> Send Notification
+                  {sending ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2"></span>
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <i className="bi bi-send"></i> Send Notification
+                    </>
+                  )}
                 </button>
+
               </div>
             </form>
           </div>
         </div>
       )}
+
     </AdminLayout>
   );
 }

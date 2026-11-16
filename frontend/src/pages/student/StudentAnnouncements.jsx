@@ -1,89 +1,87 @@
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import StudentLayout from "../../layouts/StudentLayout";
+import API from "../../services/api";
 import "./StudentAnnouncements.css";
 
-const announcementsData = [
-  {
-    id: 1,
-    title: "Registration Open for Campus Placement 2026",
-    category: "Placement",
-    date: "14 Nov 2026",
-    audience: "All Students",
-    description:
-      "Registration is now open for the 2026 campus placement drive. All eligible students are requested to complete their profiles and verify their academic details before applying.",
-    important: true,
-  },
-  {
-    id: 2,
-    title: "Pre-Placement Talk by Tech Solutions",
-    category: "Company Visit",
-    date: "12 Nov 2026",
-    audience: "Computer Science",
-    description:
-      "Tech Solutions will conduct a pre-placement talk for Computer Science students. The session will cover company details, job roles, eligibility criteria and the selection process.",
-    important: false,
-  },
-  {
-    id: 3,
-    title: "Resume Submission Deadline",
-    category: "Important",
-    date: "10 Nov 2026",
-    audience: "All Students",
-    description:
-      "Students are requested to upload their latest resumes in PDF format before the upcoming placement drive. Please ensure that your contact and academic information is up to date.",
-    important: true,
-  },
-  {
-    id: 4,
-    title: "Interview Preparation Workshop",
-    category: "Workshop",
-    date: "08 Nov 2026",
-    audience: "All Students",
-    description:
-      "The placement cell is organizing an interview preparation workshop covering technical interviews, aptitude preparation, communication skills and HR interview techniques.",
-    important: false,
-  },
-  {
-    id: 5,
-    title: "Placement Orientation Session",
-    category: "General",
-    date: "06 Nov 2026",
-    audience: "All Students",
-    description:
-      "All students are invited to attend the placement orientation session to understand placement rules, registration steps and the recruitment process.",
-    important: false,
-  },
-];
+const formatDate = (date) => {
+  if (!date) return "N/A";
+
+  return new Date(date).toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
 
 function StudentAnnouncements() {
-  const [announcements] = useState(announcementsData);
+  const [announcements, setAnnouncements] = useState([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
   const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await API.get("/announcements");
+
+        setAnnouncements(response.data.announcements || []);
+      } catch (err) {
+        console.error("Fetch announcements error:", err);
+
+        setError(
+          err.response?.data?.message ||
+            "Unable to load announcements."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAnnouncements();
+  }, []);
+
+  const normalizedAnnouncements = useMemo(() => {
+    return announcements.map((item) => ({
+      ...item,
+      category: item.category || "General",
+      description: item.message || "",
+      date: formatDate(item.createdAt),
+      audience: "All Students",
+      postedBy: item.createdBy?.name || "Placement Cell",
+      important: item.priority === "High",
+      priority: item.priority || "Medium",
+    }));
+  }, [announcements]);
+
   const filteredAnnouncements = useMemo(() => {
-    return announcements.filter((item) => {
+    return normalizedAnnouncements.filter((item) => {
       const searchText = search.toLowerCase();
 
       const matchesSearch =
-        item.title.toLowerCase().includes(searchText) ||
-        item.description.toLowerCase().includes(searchText);
+        item.title?.toLowerCase().includes(searchText) ||
+        item.description?.toLowerCase().includes(searchText);
 
       const matchesCategory =
         category === "All" || item.category === category;
 
       return matchesSearch && matchesCategory;
     });
-  }, [announcements, search, category]);
+  }, [normalizedAnnouncements, search, category]);
 
   const categories = [
     "All",
-    "Placement",
-    "Important",
-    "Workshop",
-    "Company Visit",
-    "General",
+    ...new Set(
+      normalizedAnnouncements
+        .map((item) => item.category)
+        .filter(Boolean)
+    ),
   ];
 
   return (
@@ -92,186 +90,255 @@ function StudentAnnouncements() {
       subtitle="Stay updated with the latest campus news"
       contentClassName="student-announcements-page"
     >
-    <div className="student-layout">
-       <main className="student-main">
+      <div className="student-layout">
+        <main className="student-main">
+          <div className="student-announcements-page">
 
-      <div className="student-announcements-page">
-        <div className="student-announcement-welcome">
-          <div>
-            <span className="student-announcement-eyebrow">
-              CAMPUS CONNECT UPDATES
-            </span>
-            <h2>What's happening on campus?</h2>
-            <p>
-              Important updates, placement notices and events from your
-              college placement cell.
-            </p>
-          </div>
-          <div className="student-announcement-welcome-icon">
-            <i className="bi bi-megaphone-fill"></i>
-          </div>
-        </div>
+            {/* Welcome Banner */}
+            <div className="student-announcement-welcome">
+              <div>
+                <span className="student-announcement-eyebrow">
+                  CAMPUS CONNECT UPDATES
+                </span>
 
-        <div className="student-announcement-summary">
-          <div className="student-announcement-summary-icon">
-            <i className="bi bi-bell-fill"></i>
-          </div>
-          <div>
-            <span>Available announcements</span>
-            <h3>{announcements.length}</h3>
-          </div>
-        </div>
+                <h2>What's happening on campus?</h2>
 
-        <div className="student-announcement-section-heading">
-          <div>
-            <h3>Latest Announcements</h3>
-            <p>Explore updates shared by your placement cell.</p>
-          </div>
-        </div>
+                <p>
+                  Important updates, placement notices and events from your
+                  college placement cell.
+                </p>
+              </div>
 
-        <div className="student-announcement-toolbar">
-          <div className="student-announcement-search">
-            <i className="bi bi-search"></i>
-            <input
-              type="text"
-              placeholder="Search announcements..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
+              <div className="student-announcement-welcome-icon">
+                <i className="bi bi-megaphone-fill"></i>
+              </div>
+            </div>
 
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="student-announcement-filter"
-          >
-            {categories.map((item) => (
-              <option key={item} value={item}>
-                {item === "All" ? "All Categories" : item}
-              </option>
-            ))}
-          </select>
-        </div>
+            {/* Summary */}
+            <div className="student-announcement-summary">
+              <div className="student-announcement-summary-icon">
+                <i className="bi bi-bell-fill"></i>
+              </div>
 
-        <div className="student-announcement-list">
-          {filteredAnnouncements.length > 0 ? (
-            filteredAnnouncements.map((item) => (
-              <article className="student-announcement-card" key={item.id}>
-                <div className="student-announcement-card-icon">
-                  <i
-                    className={
-                      item.category === "Placement"
-                        ? "bi bi-briefcase-fill"
-                        : item.category === "Workshop"
-                        ? "bi bi-easel-fill"
-                        : item.category === "Company Visit"
-                        ? "bi bi-building"
-                        : item.category === "Important"
-                        ? "bi bi-exclamation-circle-fill"
-                        : "bi bi-megaphone-fill"
-                    }
-                  ></i>
-                </div>
+              <div>
+                <span>Available announcements</span>
+                <h3>{loading ? "..." : announcements.length}</h3>
+              </div>
+            </div>
 
-                <div className="student-announcement-card-content">
-                  <div className="student-announcement-card-meta">
-                    <span className="student-announcement-category">
-                      {item.category}
-                    </span>
+            {/* Section Heading */}
+            <div className="student-announcement-section-heading">
+              <div>
+                <h3>Latest Announcements</h3>
+                <p>Explore updates shared by your placement cell.</p>
+              </div>
+            </div>
 
-                    {item.important && (
-                      <span className="student-announcement-important">
-                        <i className="bi bi-star-fill"></i> Important
-                      </span>
-                    )}
+            {/* Search and Filter */}
+            <div className="student-announcement-toolbar">
+              <div className="student-announcement-search">
+                <i className="bi bi-search"></i>
+
+                <input
+                  type="text"
+                  placeholder="Search announcements..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="student-announcement-filter"
+              >
+                {categories.map((item) => (
+                  <option key={item} value={item}>
+                    {item === "All" ? "All Categories" : item}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Announcement List */}
+            <div className="student-announcement-list">
+
+              {loading && (
+                <div className="text-center py-5">
+                  <div
+                    className="spinner-border text-primary"
+                    role="status"
+                  >
+                    <span className="visually-hidden">Loading...</span>
                   </div>
 
-                  <h4>{item.title}</h4>
+                  <p className="text-muted mt-2">
+                    Loading announcements...
+                  </p>
+                </div>
+              )}
 
-                  <p>{item.description}</p>
+              {!loading && error && (
+                <div className="alert alert-danger">
+                  {error}
+                </div>
+              )}
 
-                  <div className="student-announcement-card-footer">
-                    <div>
-                      <span>
-                        <i className="bi bi-calendar3"></i> {item.date}
-                      </span>
-                      <span>
-                        <i className="bi bi-people"></i> {item.audience}
-                      </span>
+              {!loading && !error && filteredAnnouncements.length > 0 && (
+                filteredAnnouncements.map((item) => (
+                  <article
+                    className="student-announcement-card"
+                    key={item._id}
+                  >
+                    <div className="student-announcement-card-icon">
+                      <i
+                        className={
+                          item.category === "Placement"
+                            ? "bi bi-briefcase-fill"
+                            : item.category === "Event"
+                            ? "bi bi-calendar-event-fill"
+                            : item.category === "Important"
+                            ? "bi bi-exclamation-circle-fill"
+                            : "bi bi-megaphone-fill"
+                        }
+                      ></i>
                     </div>
 
-                    <button
-                      onClick={() => setSelectedAnnouncement(item)}
-                    >
-                      Read More <i className="bi bi-arrow-right"></i>
-                    </button>
-                  </div>
+                    <div className="student-announcement-card-content">
+
+                      <div className="student-announcement-card-meta">
+                        <span className="student-announcement-category">
+                          Category: {item.category}
+                        </span>
+
+                        {item.important && (
+                          <span className="student-announcement-important">
+                            <i className="bi bi-star-fill"></i> Important
+                          </span>
+                        )}
+                      </div>
+
+                      <h4>{item.title}</h4>
+
+                      <p>{item.description}</p>
+
+                      <div className="student-announcement-card-footer">
+                        <div>
+                          <span>
+                            <i className="bi bi-calendar3"></i> {item.date}
+                          </span>
+
+                          <span>
+                            <i className="bi bi-person"></i> {item.postedBy}
+                          </span>
+
+                          <span>
+                            <i className="bi bi-people"></i> {item.audience}
+                          </span>
+                        </div>
+
+                        <button
+                          onClick={() => setSelectedAnnouncement(item)}
+                        >
+                          Read More <i className="bi bi-arrow-right"></i>
+                        </button>
+                      </div>
+
+                    </div>
+                  </article>
+                ))
+              )}
+
+              {!loading && !error && filteredAnnouncements.length === 0 && (
+                <div className="student-announcement-empty">
+                  <i className="bi bi-inbox"></i>
+
+                  <h3>No announcements found</h3>
+
+                  <p>
+                    Try another search term or select a different category.
+                  </p>
+
+                  <button
+                    onClick={() => {
+                      setSearch("");
+                      setCategory("All");
+                    }}
+                  >
+                    Clear Filters
+                  </button>
                 </div>
-              </article>
-            ))
-          ) : (
-            <div className="student-announcement-empty">
-              <i className="bi bi-inbox"></i>
-              <h3>No announcements found</h3>
-              <p>Try another search term or select a different category.</p>
-              <button
-                onClick={() => {
-                  setSearch("");
-                  setCategory("All");
-                }}
-              >
-                Clear Filters
-              </button>
+              )}
+
             </div>
-          )}
-        </div>
-      </div>
+          </div>
 
-      {selectedAnnouncement && (
-        <div
-          className="student-announcement-modal-backdrop"
-          onClick={() => setSelectedAnnouncement(null)}
-        >
-          <div
-            className="student-announcement-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="student-announcement-modal-header">
-              <span className="student-announcement-category">
-                {selectedAnnouncement.category}
-              </span>
-              <button onClick={() => setSelectedAnnouncement(null)}>
-                <i className="bi bi-x-lg"></i>
-              </button>
-            </div>
-
-            <h3>{selectedAnnouncement.title}</h3>
-
-            <div className="student-announcement-modal-meta">
-              <span>
-                <i className="bi bi-calendar3"></i>{" "}
-                {selectedAnnouncement.date}
-              </span>
-              <span>
-                <i className="bi bi-people"></i>{" "}
-                {selectedAnnouncement.audience}
-              </span>
-            </div>
-
-            <p>{selectedAnnouncement.description}</p>
-
-            <button
-              className="student-announcement-close-btn"
+          {/* Read More Modal */}
+          {selectedAnnouncement && (
+            <div
+              className="student-announcement-modal-backdrop"
               onClick={() => setSelectedAnnouncement(null)}
             >
-              Close
-            </button>
-          </div>
-        </div>
+              <div
+                className="student-announcement-modal"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="student-announcement-modal-header">
+                  <span className="student-announcement-category">
+                    Category: {selectedAnnouncement.category || "General"}
+                  </span>
 
+                  <button
+                    onClick={() => setSelectedAnnouncement(null)}
+                  >
+                    <i className="bi bi-x-lg"></i>
+                  </button>
+                </div>
 
-      )}
-      </main>
+                <h3>{selectedAnnouncement.title}</h3>
+
+                <div className="student-announcement-modal-meta">
+                  <span>
+                    <i className="bi bi-calendar3"></i>{" "}
+                    {selectedAnnouncement.date}
+                  </span>
+
+                  <span>
+                    <i className="bi bi-person"></i>{" "}
+                    {selectedAnnouncement.postedBy}
+                  </span>
+
+                  <span>
+                    <i className="bi bi-people"></i>{" "}
+                    {selectedAnnouncement.audience}
+                  </span>
+                </div>
+
+                <p>{selectedAnnouncement.description}</p>
+
+                <div className="mt-3">
+                  <strong>Priority:</strong>{" "}
+                  {selectedAnnouncement.priority}
+                </div>
+
+                {selectedAnnouncement.expiryDate && (
+                  <div className="mt-2">
+                    <strong>Valid Until:</strong>{" "}
+                    {formatDate(selectedAnnouncement.expiryDate)}
+                  </div>
+                )}
+
+                <button
+                  className="student-announcement-close-btn"
+                  onClick={() => setSelectedAnnouncement(null)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          )}
+
+        </main>
       </div>
     </StudentLayout>
   );

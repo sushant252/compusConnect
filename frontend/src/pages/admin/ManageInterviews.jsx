@@ -1,92 +1,92 @@
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import AdminLayout from "../../layouts/AdminLayout";
+import API from "../../services/api";
 import "./ManageInterviews.css";
 
-const initialInterviews = [
-  {
-    id: 1,
-    student: "Rahul Sharma",
-    enrollment: "CC2022001",
-    company: "Tech Solutions",
-    role: "Frontend Developer",
-    date: "2026-11-18",
-    time: "10:30",
-    mode: "Online",
-    round: "Technical Round",
-    status: "Scheduled",
-    venue: "Google Meet",
-  },
-  {
-    id: 2,
-    student: "Priya Verma",
-    enrollment: "CC2022002",
-    company: "Innovate Labs",
-    role: "Software Engineer",
-    date: "2026-11-20",
-    time: "14:00",
-    mode: "Online",
-    round: "HR Round",
-    status: "Scheduled",
-    venue: "Microsoft Teams",
-  },
-  {
-    id: 3,
-    student: "Aman Gupta",
-    enrollment: "CC2022003",
-    company: "CloudTech",
-    role: "Backend Developer",
-    date: "2026-11-10",
-    time: "11:00",
-    mode: "On Campus",
-    round: "Technical Round",
-    status: "Completed",
-    venue: "College Seminar Hall",
-  },
-  {
-    id: 4,
-    student: "Sneha Singh",
-    enrollment: "CC2022004",
-    company: "Digital Systems",
-    role: "React Developer",
-    date: "2026-11-22",
-    time: "12:00",
-    mode: "Online",
-    round: "HR Round",
-    status: "Cancelled",
-    venue: "Google Meet",
-  },
-];
-
 const emptyForm = {
-  student: "",
-  enrollment: "",
-  company: "",
-  role: "",
+  applicationId: "",
   date: "",
   time: "",
   mode: "Online",
   round: "Technical Round",
+  meetingLink: "",
   venue: "",
+  instructions: "",
 };
 
 function ManageInterviews() {
-  const [interviews, setInterviews] = useState(initialInterviews);
+  const [interviews, setInterviews] = useState([]);
+  const [applications, setApplications] = useState([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [showModal, setShowModal] = useState(false);
   const [selectedInterview, setSelectedInterview] = useState(null);
   const [form, setForm] = useState(emptyForm);
 
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [formError, setFormError] = useState("");
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const [interviewsResponse, applicationsResponse] =
+        await Promise.all([
+          API.get("/interviews"),
+          API.get("/applications"),
+        ]);
+
+      setInterviews(interviewsResponse.data.interviews || []);
+      setApplications(applicationsResponse.data.applications || []);
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+        "Failed to load interview data."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getStudentName = (item) =>
+    item.student?.name || "Unknown Student";
+
+  const getEnrollment = (item) =>
+    item.student?.enrollmentNumber || "Not available";
+
+  const getCompanyName = (item) =>
+    item.job?.company?.name || "Company";
+
+  const getJobTitle = (item) =>
+    item.job?.title || "Job Role";
+
+  const formatDate = (date) => {
+    if (!date) return "Not available";
+
+    return new Date(date).toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
   const filteredInterviews = useMemo(() => {
     return interviews.filter((item) => {
       const query = search.toLowerCase();
 
       const matchesSearch =
-        item.student.toLowerCase().includes(query) ||
-        item.company.toLowerCase().includes(query) ||
-        item.role.toLowerCase().includes(query) ||
-        item.enrollment.toLowerCase().includes(query);
+        getStudentName(item).toLowerCase().includes(query) ||
+        getCompanyName(item).toLowerCase().includes(query) ||
+        getJobTitle(item).toLowerCase().includes(query) ||
+        getEnrollment(item).toLowerCase().includes(query);
 
       const matchesStatus =
         statusFilter === "All" || item.status === statusFilter;
@@ -108,51 +108,84 @@ function ManageInterviews() {
   ).length;
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm((previous) => ({ ...previous, [name]: value }));
   };
 
-  const handleAddInterview = (e) => {
+  const handleAddInterview = async (e) => {
     e.preventDefault();
 
-    const newInterview = {
-      ...form,
-      id: Date.now(),
-      status: "Scheduled",
-    };
+    try {
+      setSaving(true);
+      setFormError("");
 
-    setInterviews((previous) => [newInterview, ...previous]);
-    setForm(emptyForm);
-    setShowModal(false);
+      const payload = {
+        applicationId: form.applicationId,
+        interviewDate: form.date,
+        interviewTime: form.time,
+        mode: form.mode,
+        round: form.round,
+        meetingLink: form.meetingLink,
+        venue: form.venue,
+        instructions: form.instructions,
+      };
+
+      await API.post("/interviews", payload);
+
+      setForm(emptyForm);
+      setShowModal(false);
+      await fetchData();
+    } catch (err) {
+      setFormError(
+        err.response?.data?.message ||
+        "Failed to schedule interview."
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const updateStatus = (id, status) => {
-    setInterviews((previous) =>
-      previous.map((item) =>
-        item.id === id ? { ...item, status } : item
-      )
-    );
+  const updateStatus = async (id, status) => {
+    try {
+      setError("");
 
-    setSelectedInterview((previous) =>
-      previous?.id === id ? { ...previous, status } : previous
-    );
-  };
-
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this interview?")) {
-      setInterviews((previous) =>
-        previous.filter((item) => item.id !== id)
+      const response = await API.put(
+        `/interviews/${id}/status`,
+        { status }
       );
 
-      if (selectedInterview?.id === id) {
-        setSelectedInterview(null);
-      }
+      const updatedInterview = response.data.interview;
+
+      setInterviews((previous) =>
+        previous.map((item) =>
+          item._id === id ? updatedInterview : item
+        )
+      );
+
+      setSelectedInterview(updatedInterview);
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+        "Failed to update interview status."
+      );
     }
   };
 
   const closeModal = () => {
     setShowModal(false);
     setForm(emptyForm);
+    setFormError("");
   };
+
+  const openScheduleModal = () => {
+    setForm(emptyForm);
+    setFormError("");
+    setShowModal(true);
+  };
+
+  const shortlistedApplications = applications.filter(
+    (application) => application.status === "Shortlisted"
+  );
 
   return (
     <AdminLayout
@@ -168,7 +201,7 @@ function ManageInterviews() {
 
           <button
             className="add-interview-btn"
-            onClick={() => setShowModal(true)}
+            onClick={openScheduleModal}
           >
             <i className="bi bi-plus-lg"></i> Schedule Interview
           </button>
@@ -199,6 +232,18 @@ function ManageInterviews() {
             <i className="bi bi-x-circle"></i>
           </div>
         </div>
+
+        {error && (
+          <div className="alert alert-danger" role="alert">
+            {error}
+            <button
+              className="btn btn-sm btn-outline-danger ms-3"
+              onClick={fetchData}
+            >
+              Retry
+            </button>
+          </div>
+        )}
 
         <div className="interviews-table-card">
           <div className="interviews-toolbar">
@@ -237,60 +282,66 @@ function ManageInterviews() {
               </thead>
 
               <tbody>
-                {filteredInterviews.map((item) => (
-                  <tr key={item.id}>
-                    <td>
-                      <div className="interview-student-name">
-                        {item.student}
-                      </div>
-                      <div className="interview-enrollment">
-                        {item.enrollment}
-                      </div>
-                    </td>
-
-                    <td>
-                      <div className="interview-company">{item.company}</div>
-                      <div className="interview-role">{item.role}</div>
-                    </td>
-
-                    <td>
-                      <div>{item.date}</div>
-                      <div className="interview-time">{item.time}</div>
-                    </td>
-
-                    <td>{item.mode}</td>
-
-                    <td>
-                      <span
-                        className={`interview-status ${item.status.toLowerCase()}`}
-                      >
-                        {item.status}
-                      </span>
-                    </td>
-
-                    <td>
-                      <div className="interview-actions">
-                        <button
-                          className="interview-view-btn"
-                          title="View Details"
-                          onClick={() => setSelectedInterview(item)}
-                        >
-                          <i className="bi bi-eye"></i>
-                        </button>
-
-                        <button
-                          className="interview-delete-btn"
-                          title="Delete Interview"
-                          onClick={() => handleDelete(item.id)}
-                        >
-                          <i className="bi bi-trash"></i>
-                        </button>
-                      </div>
+                {loading ? (
+                  <tr>
+                    <td colSpan="6" className="interviews-empty">
+                      Loading interviews...
                     </td>
                   </tr>
-                ))}
+                ) : filteredInterviews.length > 0 ? (
+                  filteredInterviews.map((item) => (
+                    <tr key={item._id}>
+                      <td>
+                        <div className="interview-student-name">
+                          {getStudentName(item)}
+                        </div>
+                        <div className="interview-enrollment">
+                          {getEnrollment(item)}
+                        </div>
+                      </td>
 
-                {filteredInterviews.length === 0 && (
+                      <td>
+                        <div className="interview-company">
+                          {getCompanyName(item)}
+                        </div>
+                        <div className="interview-role">
+                          {getJobTitle(item)}
+                        </div>
+                      </td>
+
+                      <td>
+                        <div>{formatDate(item.interviewDate)}</div>
+                        <div className="interview-time">
+                          {item.interviewTime}
+                        </div>
+                      </td>
+
+                      <td>
+                        {item.mode === "Offline" ? "On Campus" : item.mode}
+                      </td>
+
+                      <td>
+                        <span
+                          className={`interview-status ${item.status.toLowerCase()}`}
+                        >
+                          {item.status}
+                        </span>
+                      </td>
+
+                      <td>
+                        <div className="interview-actions">
+                          <button
+                            className="interview-view-btn"
+                            title="View Details"
+                            onClick={() => setSelectedInterview(item)}
+                          >
+                            <i className="bi bi-eye"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
                   <tr>
                     <td colSpan="6" className="interviews-empty">
                       No interviews found.
@@ -302,64 +353,53 @@ function ManageInterviews() {
           </div>
         </div>
 
+        {/* Schedule Interview Modal */}
         {showModal && (
           <div className="interview-modal-overlay">
             <div className="interview-modal">
               <div className="interview-modal-header">
                 <div>
                   <h4>Schedule New Interview</h4>
-                  <p>Enter student and interview details.</p>
+                  <p>Select a shortlisted application and enter interview details.</p>
                 </div>
 
-                <button className="interview-close-btn" onClick={closeModal}>
+                <button
+                  className="interview-close-btn"
+                  onClick={closeModal}
+                >
                   &times;
                 </button>
               </div>
 
               <form onSubmit={handleAddInterview}>
                 <div className="interview-form-grid">
-                  <div className="interview-form-group">
-                    <label>Student Name *</label>
-                    <input
-                      name="student"
-                      value={form.student}
+                  <div className="interview-form-group full-width">
+                    <label>Shortlisted Student / Application *</label>
+                    <select
+                      name="applicationId"
+                      value={form.applicationId}
                       onChange={handleChange}
-                      placeholder="Student name"
                       required
-                    />
-                  </div>
+                    >
+                      <option value="">Select shortlisted application</option>
 
-                  <div className="interview-form-group">
-                    <label>Enrollment Number *</label>
-                    <input
-                      name="enrollment"
-                      value={form.enrollment}
-                      onChange={handleChange}
-                      placeholder="CC2022001"
-                      required
-                    />
-                  </div>
+                      {shortlistedApplications.map((application) => (
+                        <option
+                          key={application._id}
+                          value={application._id}
+                        >
+                          {application.student?.name || "Student"} —{" "}
+                          {application.job?.title || "Job"} —{" "}
+                          {application.student?.enrollmentNumber || "No enrollment"}
+                        </option>
+                      ))}
+                    </select>
 
-                  <div className="interview-form-group">
-                    <label>Company *</label>
-                    <input
-                      name="company"
-                      value={form.company}
-                      onChange={handleChange}
-                      placeholder="Company name"
-                      required
-                    />
-                  </div>
-
-                  <div className="interview-form-group">
-                    <label>Job Role *</label>
-                    <input
-                      name="role"
-                      value={form.role}
-                      onChange={handleChange}
-                      placeholder="Job title"
-                      required
-                    />
+                    {shortlistedApplications.length === 0 && (
+                      <small>
+                        No shortlisted applications available.
+                      </small>
+                    )}
                   </div>
 
                   <div className="interview-form-group">
@@ -369,6 +409,7 @@ function ManageInterviews() {
                       name="date"
                       value={form.date}
                       onChange={handleChange}
+                      min={new Date().toLocaleDateString("en-CA")}
                       required
                     />
                   </div>
@@ -392,7 +433,7 @@ function ManageInterviews() {
                       onChange={handleChange}
                     >
                       <option value="Online">Online</option>
-                      <option value="On Campus">On Campus</option>
+                      <option value="Offline">On Campus</option>
                     </select>
                   </div>
 
@@ -411,16 +452,43 @@ function ManageInterviews() {
                   </div>
 
                   <div className="interview-form-group full-width">
-                    <label>Venue / Meeting Link *</label>
+                    <label>Meeting Link</label>
+                    <input
+                      type="url"
+                      name="meetingLink"
+                      value={form.meetingLink}
+                      onChange={handleChange}
+                      placeholder="https://meet.google.com/..."
+                    />
+                  </div>
+
+                  <div className="interview-form-group full-width">
+                    <label>Venue</label>
                     <input
                       name="venue"
                       value={form.venue}
                       onChange={handleChange}
-                      placeholder="Enter venue or meeting link"
-                      required
+                      placeholder="Enter interview venue"
+                    />
+                  </div>
+
+                  <div className="interview-form-group full-width">
+                    <label>Instructions</label>
+                    <textarea
+                      name="instructions"
+                      value={form.instructions}
+                      onChange={handleChange}
+                      placeholder="Enter any instructions for the student"
+                      rows="3"
                     />
                   </div>
                 </div>
+
+                {formError && (
+                  <div className="alert alert-danger mt-3">
+                    {formError}
+                  </div>
+                )}
 
                 <div className="interview-modal-actions">
                   <button
@@ -431,8 +499,12 @@ function ManageInterviews() {
                     Cancel
                   </button>
 
-                  <button type="submit" className="interview-save-btn">
-                    Schedule Interview
+                  <button
+                    type="submit"
+                    className="interview-save-btn"
+                    disabled={saving || shortlistedApplications.length === 0}
+                  >
+                    {saving ? "Scheduling..." : "Schedule Interview"}
                   </button>
                 </div>
               </form>
@@ -440,6 +512,7 @@ function ManageInterviews() {
           </div>
         )}
 
+        {/* Interview Details Modal */}
         {selectedInterview && (
           <div
             className="interview-modal-overlay"
@@ -452,7 +525,7 @@ function ManageInterviews() {
               <div className="interview-modal-header">
                 <div>
                   <h4>Interview Details</h4>
-                  <p>{selectedInterview.student}</p>
+                  <p>{getStudentName(selectedInterview)}</p>
                 </div>
 
                 <button
@@ -464,14 +537,51 @@ function ManageInterviews() {
               </div>
 
               <div className="interview-detail-list">
-                <p><strong>Enrollment:</strong> {selectedInterview.enrollment}</p>
-                <p><strong>Company:</strong> {selectedInterview.company}</p>
-                <p><strong>Job Role:</strong> {selectedInterview.role}</p>
-                <p><strong>Date:</strong> {selectedInterview.date}</p>
-                <p><strong>Time:</strong> {selectedInterview.time}</p>
-                <p><strong>Mode:</strong> {selectedInterview.mode}</p>
-                <p><strong>Round:</strong> {selectedInterview.round}</p>
-                <p><strong>Venue / Link:</strong> {selectedInterview.venue}</p>
+                <p>
+                  <strong>Enrollment:</strong> {getEnrollment(selectedInterview)}
+                </p>
+                <p>
+                  <strong>Company:</strong> {getCompanyName(selectedInterview)}
+                </p>
+                <p>
+                  <strong>Job Role:</strong> {getJobTitle(selectedInterview)}
+                </p>
+                <p>
+                  <strong>Date:</strong> {formatDate(selectedInterview.interviewDate)}
+                </p>
+                <p>
+                  <strong>Time:</strong> {selectedInterview.interviewTime}
+                </p>
+                <p>
+                  <strong>Mode:</strong>{" "}
+                  {selectedInterview.mode === "Offline"
+                    ? "On Campus"
+                    : selectedInterview.mode}
+                </p>
+                <p>
+                  <strong>Round:</strong> {selectedInterview.round}
+                </p>
+                <p>
+                  <strong>Venue:</strong> {selectedInterview.venue || "Not specified"}
+                </p>
+                <p>
+                  <strong>Meeting Link:</strong>{" "}
+                  {selectedInterview.meetingLink ? (
+                    <a
+                      href={selectedInterview.meetingLink}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Open Meeting Link
+                    </a>
+                  ) : (
+                    "Not added"
+                  )}
+                </p>
+                <p>
+                  <strong>Instructions:</strong>{" "}
+                  {selectedInterview.instructions || "No instructions"}
+                </p>
               </div>
 
               <div className="interview-status-update">
@@ -479,7 +589,7 @@ function ManageInterviews() {
                 <select
                   value={selectedInterview.status}
                   onChange={(e) =>
-                    updateStatus(selectedInterview.id, e.target.value)
+                    updateStatus(selectedInterview._id, e.target.value)
                   }
                 >
                   <option value="Scheduled">Scheduled</option>

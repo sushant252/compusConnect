@@ -391,3 +391,69 @@
     font-size: 19px;
   }
 }
+
+
+
+/* Student Resume Section */
+.student-resume-section {
+  margin: 20px 0;
+  padding: 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.student-resume-section h6 {
+  margin-bottom: 12px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.resume-uploaded {
+  color: #15803d;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.resume-uploaded span {
+  margin-right: 6px;
+}
+
+.resume-not-uploaded {
+  color: #dc2626;
+  font-size: 14px;
+  margin-bottom: 0;
+}
+
+.student-resume-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.student-resume-view-btn,
+.student-resume-download-btn {
+  border: none;
+  border-radius: 7px;
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.student-resume-view-btn {
+  background: #2563eb;
+  color: white;
+}
+
+.student-resume-download-btn {
+  background: #15803d;
+  color: white;
+}
+
+.student-resume-view-btn:disabled,
+.student-resume-download-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

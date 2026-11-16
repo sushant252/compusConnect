@@ -1,76 +1,70 @@
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import AdminLayout from "../../layouts/AdminLayout";
+import API from "../../services/api";
 import "./ManageApplications.css";
 
-const initialApplications = [
-  {
-    id: 1,
-    student: "Rahul Sharma",
-    enrollment: "CC2022001",
-    company: "Tech Solutions",
-    job: "Frontend Developer",
-    appliedOn: "10 Nov 2026",
-    cgpa: "8.5",
-    status: "Shortlisted",
-  },
-  {
-    id: 2,
-    student: "Priya Verma",
-    enrollment: "CC2022002",
-    company: "Innovate Labs",
-    job: "Software Engineer",
-    appliedOn: "11 Nov 2026",
-    cgpa: "9.1",
-    status: "Pending",
-  },
-  {
-    id: 3,
-    student: "Aman Gupta",
-    enrollment: "CC2022003",
-    company: "Digital Systems",
-    job: "React Developer",
-    appliedOn: "12 Nov 2026",
-    cgpa: "7.8",
-    status: "Rejected",
-  },
-  {
-    id: 4,
-    student: "Sneha Singh",
-    enrollment: "CC2022004",
-    company: "CloudTech",
-    job: "Backend Developer",
-    appliedOn: "13 Nov 2026",
-    cgpa: "8.9",
-    status: "Selected",
-  },
-  {
-    id: 5,
-    student: "Arjun Patel",
-    enrollment: "CC2022005",
-    company: "Tech Solutions",
-    job: "Frontend Developer",
-    appliedOn: "14 Nov 2026",
-    cgpa: "7.6",
-    status: "Pending",
-  },
-  {
-    id: 6,
-    student: "Neha Kumari",
-    enrollment: "CC2022006",
-    company: "Innovate Labs",
-    job: "Software Engineer",
-    appliedOn: "14 Nov 2026",
-    cgpa: "8.7",
-    status: "Shortlisted",
-  },
-];
+const formatDate = (date) => {
+  if (!date) return "N/A";
+
+  return new Date(date).toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
+
+const mapApplication = (app) => ({
+  id: app._id,
+  studentId: app.student?._id,
+  student: app.student?.name || "Unknown Student",
+  enrollment: app.student?.enrollmentNumber || "N/A",
+  email: app.student?.email || "N/A",
+  phone: app.student?.phone || "N/A",
+  branch: app.student?.branch || "N/A",
+  cgpa: app.student?.cgpa ?? "N/A",
+  company: app.job?.company?.name || "Unknown Company",
+  job: app.job?.title || "Unknown Job",
+  appliedOn: formatDate(app.appliedAt || app.createdAt),
+  status: app.status || "Pending",
+  coverLetter: app.coverLetter || "",
+  resume: app.resume || "",
+  jobId: app.job?._id,
+});
 
 function ManageApplications() {
-  const [applications, setApplications] = useState(initialApplications);
+  const [applications, setApplications] = useState([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [selectedApplication, setSelectedApplication] = useState(null);
+
+  const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  useEffect(() => {
+    fetchApplications();
+  }, []);
+
+  const fetchApplications = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await API.get("/applications");
+      const list = response.data.applications || [];
+
+      setApplications(list.map(mapApplication));
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+        "Failed to load applications."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredApplications = useMemo(() => {
     return applications.filter((app) => {
@@ -101,22 +95,65 @@ function ManageApplications() {
     (app) => app.status === "Selected"
   ).length;
 
-  const updateStatus = (id, newStatus) => {
-    setApplications((previous) =>
-      previous.map((app) =>
-        app.id === id ? { ...app, status: newStatus } : app
-      )
-    );
+  const rejectedCount = applications.filter(
+    (app) => app.status === "Rejected"
+  ).length;
 
-    setSelectedApplication((previous) =>
-      previous?.id === id
-        ? { ...previous, status: newStatus }
-        : previous
-    );
+  const getStatusClass = (status) =>
+    status.toLowerCase().replace(/\s+/g, "-");
+
+  const updateStatus = async (id, newStatus) => {
+    try {
+      setUpdating(true);
+      setError("");
+      setSuccess("");
+
+      await API.put(`/applications/${id}/status`, {
+        status: newStatus,
+      });
+
+      setApplications((previous) =>
+        previous.map((app) =>
+          app.id === id ? { ...app, status: newStatus } : app
+        )
+      );
+
+      setSelectedApplication((previous) =>
+        previous?.id === id
+          ? { ...previous, status: newStatus }
+          : previous
+      );
+
+      setSuccess("Application status updated successfully!");
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+        "Failed to update application status."
+      );
+    } finally {
+      setUpdating(false);
+    }
   };
 
-  const getStatusClass = (status) => {
-    return status.toLowerCase().replace(/\s+/g, "-");
+  const handleResume = async (application) => {
+    if (!application.resume) {
+      setError("Resume is not available for this application.");
+      return;
+    }
+
+    try {
+      setError("");
+
+      const response = await API.get(
+        `/admin/students/${application.studentId}/resume`,
+        { responseType: "blob" }
+      );
+
+      const fileURL = URL.createObjectURL(response.data);
+      window.open(fileURL, "_blank");
+    } catch (err) {
+      setError("Unable to open student resume.");
+    }
   };
 
   return (
@@ -131,6 +168,14 @@ function ManageApplications() {
             <p>Track and update student job applications.</p>
           </div>
         </div>
+
+        {error && (
+          <div className="alert alert-danger">{error}</div>
+        )}
+
+        {success && (
+          <div className="alert alert-success">{success}</div>
+        )}
 
         <div className="application-stats-grid">
           <div className="application-stat-card">
@@ -212,7 +257,13 @@ function ManageApplications() {
               </thead>
 
               <tbody>
-                {filteredApplications.map((app) => (
+                {loading ? (
+                  <tr>
+                    <td colSpan="6" className="applications-empty">
+                      Loading applications...
+                    </td>
+                  </tr>
+                ) : filteredApplications.map((app) => (
                   <tr key={app.id}>
                     <td>
                       <div className="application-student-name">
@@ -224,21 +275,18 @@ function ManageApplications() {
                     </td>
 
                     <td>
-                      <div className="application-company">{app.company}</div>
+                      <div className="application-company">
+                        {app.company}
+                      </div>
                       <div className="application-job">{app.job}</div>
                     </td>
 
-                    <td>
-                      <strong>{app.cgpa}</strong>
-                    </td>
-
+                    <td><strong>{app.cgpa}</strong></td>
                     <td>{app.appliedOn}</td>
 
                     <td>
                       <span
-                        className={`application-status ${getStatusClass(
-                          app.status
-                        )}`}
+                        className={`application-status ${getStatusClass(app.status)}`}
                       >
                         {app.status}
                       </span>
@@ -256,7 +304,7 @@ function ManageApplications() {
                   </tr>
                 ))}
 
-                {filteredApplications.length === 0 && (
+                {!loading && filteredApplications.length === 0 && (
                   <tr>
                     <td colSpan="6" className="applications-empty">
                       No applications found.
@@ -303,6 +351,26 @@ function ManageApplications() {
                 </div>
 
                 <div>
+                  <span>Email</span>
+                  <strong>{selectedApplication.email}</strong>
+                </div>
+
+                <div>
+                  <span>Phone</span>
+                  <strong>{selectedApplication.phone}</strong>
+                </div>
+
+                <div>
+                  <span>Branch</span>
+                  <strong>{selectedApplication.branch}</strong>
+                </div>
+
+                <div>
+                  <span>CGPA</span>
+                  <strong>{selectedApplication.cgpa}</strong>
+                </div>
+
+                <div>
                   <span>Company</span>
                   <strong>{selectedApplication.company}</strong>
                 </div>
@@ -313,21 +381,33 @@ function ManageApplications() {
                 </div>
 
                 <div>
-                  <span>CGPA</span>
-                  <strong>{selectedApplication.cgpa}</strong>
-                </div>
-
-                <div>
                   <span>Applied On</span>
                   <strong>{selectedApplication.appliedOn}</strong>
                 </div>
+
+                <div>
+                  <span>Cover Letter</span>
+                  <strong>
+                    {selectedApplication.coverLetter || "Not provided"}
+                  </strong>
+                </div>
               </div>
+
+              {selectedApplication.resume && (
+                <button
+                  className="application-view-btn mt-3"
+                  onClick={() => handleResume(selectedApplication)}
+                >
+                  <i className="bi bi-file-earmark-pdf"></i> View Resume
+                </button>
+              )}
 
               <div className="application-status-update">
                 <label>Update Application Status</label>
 
                 <select
                   value={selectedApplication.status}
+                  disabled={updating}
                   onChange={(e) =>
                     updateStatus(selectedApplication.id, e.target.value)
                   }

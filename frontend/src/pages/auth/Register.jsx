@@ -1,8 +1,12 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 function Register() {
+  const navigate = useNavigate();
+  const { register } = useAuth();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -15,6 +19,9 @@ function Register() {
     graduationYear: "",
   });
 
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -22,35 +29,49 @@ function Register() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
+      setError("Passwords do not match!");
       return;
     }
 
     if (Number(formData.cgpa) < 0 || Number(formData.cgpa) > 10) {
-      alert("CGPA must be between 0 and 10.");
+      setError("CGPA must be between 0 and 10.");
       return;
     }
 
-    // Temporary frontend demo.
-    // Real registration will be connected to backend later.
-    alert("Registration form submitted successfully!");
+    setLoading(true);
 
-    console.log("Student Registration:", {
-      ...formData,
-      password: "[hidden]",
-      confirmPassword: "[hidden]",
-    });
+    try {
+      await register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        phone: formData.phone,
+        enrollmentNumber: formData.enrollmentNumber,
+        branch: formData.branch,
+        cgpa: Number(formData.cgpa),
+        graduationYear: Number(formData.graduationYear),
+      });
+
+      navigate("/login");
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+        "Registration failed. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="auth-page">
       <div className="auth-card" style={{ maxWidth: "650px" }}>
 
-        {/* Brand */}
         <div className="d-flex align-items-center gap-3 mb-4">
           <div className="brand-icon">C</div>
           <div>
@@ -69,7 +90,6 @@ function Register() {
 
         <form onSubmit={handleSubmit}>
 
-          {/* Personal Details */}
           <h6 className="fw-bold mb-3 text-primary">
             Personal Information
           </h6>
@@ -127,7 +147,6 @@ function Register() {
 
           <hr className="my-4" />
 
-          {/* Academic Details */}
           <h6 className="fw-bold mb-3 text-primary">
             Academic Information
           </h6>
@@ -217,7 +236,6 @@ function Register() {
 
           <hr className="my-4" />
 
-          {/* Account Security */}
           <h6 className="fw-bold mb-3 text-primary">
             Account Security
           </h6>
@@ -258,11 +276,18 @@ function Register() {
             </div>
           </div>
 
+          {error && (
+            <div className="alert alert-danger" role="alert">
+              {error}
+            </div>
+          )}
+
           <button
             type="submit"
             className="btn btn-primary w-100 mt-2"
+            disabled={loading}
           >
-            Create Account
+            {loading ? "Creating Account..." : "Create Account"}
           </button>
 
         </form>

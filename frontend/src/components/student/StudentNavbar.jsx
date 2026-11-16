@@ -1,11 +1,20 @@
 
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import "./StudentNavbar.css";
 
 function StudentNavbar({ title, subtitle }) {
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef(null);
+
+  const { logout, user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -36,18 +45,16 @@ function StudentNavbar({ title, subtitle }) {
   return (
     <header className="student-topbar">
 
-      {/* Left Side - Page Information */}
       <div className="navbar-page-info">
         <h5>{title}</h5>
         <small>{subtitle}</small>
       </div>
 
-      {/* Right Side */}
       <div className="topbar-right">
-
-        {/* Notification Section */}
+       <div className="student-user-info">
+          <span>{user?.name || "Student"}</span>
+        </div>
         <div className="navbar-notification-wrapper" ref={notificationRef}>
-
           <button
             className="notification-btn"
             type="button"
@@ -61,7 +68,6 @@ function StudentNavbar({ title, subtitle }) {
             <span className="notification-dot"></span>
           </button>
 
-          {/* Notification Dropdown */}
           {showNotifications && (
             <div className="notification-dropdown">
 
@@ -73,29 +79,19 @@ function StudentNavbar({ title, subtitle }) {
               <div className="notification-list">
 
                 <div className="notification-item">
-                  <div className="notification-item-icon blue">
-                    💼
-                  </div>
-
+                  <div className="notification-item-icon blue">💼</div>
                   <div>
                     <strong>New Job Posted</strong>
-                    <p>
-                      A new Frontend Developer job is available.
-                    </p>
+                    <p>A new Frontend Developer job is available.</p>
                     <small>10 minutes ago</small>
                   </div>
                 </div>
 
                 <div className="notification-item">
-                  <div className="notification-item-icon green">
-                    📅
-                  </div>
-
+                  <div className="notification-item-icon green">📅</div>
                   <div>
                     <strong>Interview Scheduled</strong>
-                    <p>
-                      Your interview schedule has been updated.
-                    </p>
+                    <p>Your interview schedule has been updated.</p>
                     <small>1 hour ago</small>
                   </div>
                 </div>
@@ -112,8 +108,11 @@ function StudentNavbar({ title, subtitle }) {
 
             </div>
           )}
-
         </div>
+
+        
+
+       
 
       </div>
     </header>

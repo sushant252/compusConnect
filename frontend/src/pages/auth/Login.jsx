@@ -1,13 +1,20 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 function Login() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     role: "student",
   });
+
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -16,14 +23,37 @@ function Login() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    // Temporary frontend testing only.
-    // Real authentication will be connected to the backend later.
-    alert(
-      `Login form submitted!\nRole: ${formData.role}\nEmail: ${formData.email}`
-    );
+    try {
+      const loggedInUser = await login(
+        formData.email,
+        formData.password
+      );
+
+      if (loggedInUser.role !== formData.role) {
+        setError(
+          `This account does not have ${formData.role} access.`
+        );
+        return;
+      }
+
+      if (loggedInUser.role === "admin") {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/student/dashboard");
+      }
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+        "Login failed. Please check your credentials."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -93,8 +123,18 @@ function Login() {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary w-100">
-            Login
+          {error && (
+            <div className="alert alert-danger" role="alert">
+              {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            className="btn btn-primary w-100"
+            disabled={loading}
+          >
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 

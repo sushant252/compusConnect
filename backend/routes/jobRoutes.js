@@ -12,13 +12,16 @@ const {
 
 const { protect, adminOnly } = require("../middleware/authMiddleware");
 
-// All job routes require Admin authentication
-router.use(protect, adminOnly);
+// All routes require login
+router.use(protect);
 
-router.post("/", addJob);
+// Student and Admin can view jobs
 router.get("/", getJobs);
 router.get("/:id", getJobById);
-router.put("/:id", updateJob);
-router.delete("/:id", deleteJob);
+
+// Only Admin can manage jobs
+router.post("/", adminOnly, addJob);
+router.put("/:id", adminOnly, updateJob);
+router.delete("/:id", adminOnly, deleteJob);
 
 module.exports = router;

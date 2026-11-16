@@ -1,228 +1,290 @@
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import StudentLayout from "../../layouts/StudentLayout";
+import API from "../../services/api";
 import "./Interviews.css";
 
-const interviewsData = [
-  {
-    id: 1,
-    company: "Tech Solutions",
-    role: "Frontend Developer",
-    date: "18 Nov 2026",
-    time: "10:30 AM",
-    mode: "Online",
-    round: "Technical Round",
-    status: "Upcoming",
-    logo: "T",
-    color: "blue",
-  },
-  {
-    id: 2,
-    company: "Innovate Labs",
-    role: "Software Engineer",
-    date: "20 Nov 2026",
-    time: "02:00 PM",
-    mode: "Online",
-    round: "HR Round",
-    status: "Upcoming",
-    logo: "I",
-    color: "purple",
-  },
-  {
-    id: 3,
-    company: "CloudTech",
-    role: "Backend Developer",
-    date: "10 Nov 2026",
-    time: "11:00 AM",
-    mode: "On Campus",
-    round: "Technical Round",
-    status: "Completed",
-    logo: "C",
-    color: "green",
-  },
-  {
-    id: 4,
-    company: "Digital Systems",
-    role: "React Developer",
-    date: "05 Nov 2026",
-    time: "12:00 PM",
-    mode: "Online",
-    round: "HR Round",
-    status: "Cancelled",
-    logo: "D",
-    color: "orange",
-  },
-];
-
 function Interviews() {
+  const [interviews, setInterviews] = useState([]);
   const [activeFilter, setActiveFilter] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetchInterviews();
+  }, []);
+
+  const fetchInterviews = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await API.get("/interviews/my");
+      setInterviews(response.data.interviews || []);
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+        "Failed to load interviews."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getDisplayStatus = (status) => {
+    if (status === "Scheduled") return "Upcoming";
+    return status;
+  };
+
+  const getCompanyName = (interview) => {
+    return interview.job?.company?.name || "Company";
+  };
+
+  const getJobTitle = (interview) => {
+    return interview.job?.title || "Job Role";
+  };
+
+  const getCompanyLogo = (interview) => {
+    return getCompanyName(interview).charAt(0).toUpperCase();
+  };
+
+  const getCompanyColor = (interview) => {
+    const colors = ["blue", "purple", "green", "orange"];
+    const value = getCompanyName(interview).length;
+    return colors[value % colors.length];
+  };
+
+  const formatDate = (date) => {
+    if (!date) return "Date unavailable";
+
+    return new Date(date).toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
 
   const filters = ["All", "Upcoming", "Completed", "Cancelled"];
 
   const filteredInterviews = useMemo(() => {
-    return interviewsData.filter((interview) => {
+    return interviews.filter((interview) => {
+      const company = getCompanyName(interview).toLowerCase();
+      const role = getJobTitle(interview).toLowerCase();
+      const search = searchTerm.toLowerCase();
+
       const matchesSearch =
-        interview.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        interview.role.toLowerCase().includes(searchTerm.toLowerCase());
+        company.includes(search) || role.includes(search);
 
       const matchesFilter =
-        activeFilter === "All" || interview.status === activeFilter;
+        activeFilter === "All" ||
+        getDisplayStatus(interview.status) === activeFilter;
 
       return matchesSearch && matchesFilter;
     });
-  }, [activeFilter, searchTerm]);
+  }, [interviews, activeFilter, searchTerm]);
 
   const stats = [
     {
       label: "Total Interviews",
-      value: interviewsData.length,
+      value: interviews.length,
       icon: "▣",
       color: "interview-blue",
     },
     {
       label: "Upcoming",
-      value: interviewsData.filter((item) => item.status === "Upcoming").length,
+      value: interviews.filter(
+        (item) => item.status === "Scheduled"
+      ).length,
       icon: "◷",
       color: "interview-orange",
     },
     {
       label: "Completed",
-      value: interviewsData.filter((item) => item.status === "Completed").length,
+      value: interviews.filter(
+        (item) => item.status === "Completed"
+      ).length,
       icon: "✓",
       color: "interview-green",
     },
     {
       label: "Cancelled",
-      value: interviewsData.filter((item) => item.status === "Cancelled").length,
+      value: interviews.filter(
+        (item) => item.status === "Cancelled"
+      ).length,
       icon: "✕",
       color: "interview-red",
     },
   ];
 
   return (
-    <StudentLayout title="Interviews" subtitle="Manage your placement interviews" >
-     <div className="student-layout">
-       <main className="student-main">
-        
-      {/* Statistics */}
-      <div className="interview-stats">
-        {stats.map((stat) => (
-          <div className="interview-stat-card" key={stat.label}>
-            <div className={`interview-stat-icon ${stat.color}`}>
-              {stat.icon}
-            </div>
-            <div>
-              <h3>{String(stat.value).padStart(2, "0")}</h3>
-              <p>{stat.label}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+    <StudentLayout
+      title="Interviews"
+      subtitle="Manage your placement interviews"
+    >
+      <div className="student-layout">
+        <main className="student-main">
 
-      {/* Search and Filters */}
-      <div className="interviews-toolbar">
-        <div className="interview-search">
-          <span>⌕</span>
-          <input
-            type="text"
-            placeholder="Search company or job role..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-
-        <div className="interview-filters">
-          {filters.map((filter) => (
-            <button
-              key={filter}
-              className={`interview-filter-btn ${
-                activeFilter === filter ? "active" : ""
-              }`}
-              onClick={() => setActiveFilter(filter)}
-            >
-              {filter}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Interview List */}
-      <div className="interviews-list">
-        <div className="interviews-list-heading">
-          <div>
-            <h3>Interview Schedule</h3>
-            <p>
-              Showing {filteredInterviews.length} of {interviewsData.length} interviews
-            </p>
-          </div>
-        </div>
-
-        {filteredInterviews.length > 0 ? (
-          filteredInterviews.map((interview) => (
-            <div className="interview-card" key={interview.id}>
-              <div className={`interview-company-logo ${interview.color}`}>
-                {interview.logo}
-              </div>
-
-              <div className="interview-main-info">
-                <h4>{interview.role}</h4>
-                <p className="interview-company">{interview.company}</p>
-
-                <div className="interview-meta">
-                  <span>▣ {interview.date}</span>
-                  <span>◷ {interview.time}</span>
-                  <span>⌖ {interview.mode}</span>
+          {/* Statistics */}
+          <div className="interview-stats">
+            {stats.map((stat) => (
+              <div className="interview-stat-card" key={stat.label}>
+                <div className={`interview-stat-icon ${stat.color}`}>
+                  {stat.icon}
                 </div>
-
-                <span className="interview-round">
-                  {interview.round}
-                </span>
+                <div>
+                  <h3>{String(stat.value).padStart(2, "0")}</h3>
+                  <p>{stat.label}</p>
+                </div>
               </div>
+            ))}
+          </div>
 
-              <div className="interview-card-right">
-                <span
-                  className={`interview-status ${interview.status.toLowerCase()}`}
+          {/* Search and Filters */}
+          <div className="interviews-toolbar">
+            <div className="interview-search">
+              <span>⌕</span>
+              <input
+                type="text"
+                placeholder="Search company or job role..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+
+            <div className="interview-filters">
+              {filters.map((filter) => (
+                <button
+                  key={filter}
+                  className={`interview-filter-btn ${
+                    activeFilter === filter ? "active" : ""
+                  }`}
+                  onClick={() => setActiveFilter(filter)}
                 >
-                  {interview.status}
-                </span>
+                  {filter}
+                </button>
+              ))}
+            </div>
+          </div>
 
-                {interview.status === "Upcoming" && interview.mode === "Online" && (
-                  <button
-                    className="interview-join-btn"
-                    onClick={() =>
-                      alert("Meeting link will be available when the interview is scheduled.")
-                    }
-                  >
-                    Meeting Details
-                  </button>
-                )}
-
-                <small>Interview #{interview.id}</small>
+          {/* Interview List */}
+          <div className="interviews-list">
+            <div className="interviews-list-heading">
+              <div>
+                <h3>Interview Schedule</h3>
+                <p>
+                  Showing {filteredInterviews.length} of {interviews.length} interviews
+                </p>
               </div>
             </div>
-          ))
-        ) : (
-          <div className="interviews-empty">
-            <div>▣</div>
-            <h4>No interviews found</h4>
-            <p>Try another search term or status filter.</p>
-            <button
-              onClick={() => {
-                setSearchTerm("");
-                setActiveFilter("All");
-              }}
-            >
-              Clear Filters
-            </button>
-          </div>
-        )}
-      </div>
-       </main>
-     </div>
-    </StudentLayout>
 
-    
+            {loading ? (
+              <div className="interviews-empty">
+                <h4>Loading interviews...</h4>
+              </div>
+            ) : error ? (
+              <div className="interviews-empty">
+                <h4>Unable to load interviews</h4>
+                <p>{error}</p>
+                <button onClick={fetchInterviews}>Try Again</button>
+              </div>
+            ) : filteredInterviews.length > 0 ? (
+              filteredInterviews.map((interview) => {
+                const displayStatus = getDisplayStatus(interview.status);
+
+                return (
+                  <div className="interview-card" key={interview._id}>
+                    <div
+                      className={`interview-company-logo ${getCompanyColor(
+                        interview
+                      )}`}
+                    >
+                      {getCompanyLogo(interview)}
+                    </div>
+
+                    <div className="interview-main-info">
+                      <h4>{getJobTitle(interview)}</h4>
+                      <p className="interview-company">
+                        {getCompanyName(interview)}
+                      </p>
+
+                      <div className="interview-meta">
+                        <span>▣ {formatDate(interview.interviewDate)}</span>
+                        <span>◷ {interview.interviewTime}</span>
+                        <span>
+                          ⌖ {interview.mode === "Offline" ? "On Campus" : "Online"}
+                        </span>
+                      </div>
+
+                      <span className="interview-round">
+                        {interview.round || "Technical Round"}
+                      </span>
+                    </div>
+
+                    <div className="interview-card-right">
+                      <span
+                        className={`interview-status ${displayStatus.toLowerCase()}`}
+                      >
+                        {displayStatus}
+                      </span>
+
+                      {displayStatus === "Upcoming" &&
+                        interview.mode === "Online" &&
+                        interview.meetingLink && (
+                          <button
+                            className="interview-join-btn"
+                            onClick={() =>
+                              window.open(
+                                interview.meetingLink,
+                                "_blank",
+                                "noopener,noreferrer"
+                              )
+                            }
+                          >
+                            Meeting Details
+                          </button>
+                        )}
+
+                      {displayStatus === "Upcoming" &&
+                        interview.mode === "Online" &&
+                        !interview.meetingLink && (
+                          <button
+                            className="interview-join-btn"
+                            disabled
+                          >
+                            Link Not Available
+                          </button>
+                        )}
+
+                      <small>
+                        Interview #{interview._id.slice(-6).toUpperCase()}
+                      </small>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="interviews-empty">
+                <div>▣</div>
+                <h4>No interviews found</h4>
+                <p>
+                  Try another search term or status filter.
+                </p>
+                <button
+                  onClick={() => {
+                    setSearchTerm("");
+                    setActiveFilter("All");
+                  }}
+                >
+                  Clear Filters
+                </button>
+              </div>
+            )}
+          </div>
+
+        </main>
+      </div>
+    </StudentLayout>
   );
 }
 

@@ -1,12 +1,22 @@
 
 import { useState } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import "./StudentSidebar.css";
 
 function StudentSidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const { logout, user } = useAuth();
+  const navigate = useNavigate();
+
   const closeSidebar = () => setIsOpen(false);
+
+  const handleLogout = () => {
+    logout();
+    closeSidebar();
+    navigate("/login", { replace: true });
+  };
 
   return (
     <>
@@ -79,34 +89,47 @@ function StudentSidebar() {
           >
             <span>♙</span> My Profile
           </NavLink>
-          
-          <NavLink to="/student/announcements" className="sidebar-link">
+
+          <NavLink
+            to="/student/announcements"
+            className="sidebar-link"
+            onClick={closeSidebar}
+          >
             <span><i className="bi bi-megaphone"></i></span>
             Announcements
           </NavLink>
-          <NavLink to="/student/notifications" className="sidebar-link">
-              <span><i className="bi bi-bell"></i></span>
-              Notifications
-          </NavLink>
 
+          <NavLink
+            to="/student/notifications"
+            className="sidebar-link"
+            onClick={closeSidebar}
+          >
+            <span><i className="bi bi-bell"></i></span>
+            Notifications
+          </NavLink>
         </nav>
 
         <div className="sidebar-bottom">
           <div className="student-mini-profile">
-            <div className="avatar">RS</div>
+            <div className="avatar">
+              {user?.name
+                ? user.name.split(" ").map((word) => word[0]).join("").slice(0, 2).toUpperCase()
+                : "ST"}
+            </div>
+
             <div>
-              <strong>Rahul Sharma</strong>
+              <strong>{user?.name || "Student"}</strong>
               <small>Student</small>
             </div>
           </div>
 
-          <Link
-            to="/login"
+          <button
+            type="button"
             className="sidebar-logout"
-            onClick={closeSidebar}
+            onClick={handleLogout}
           >
             ↪ Logout
-          </Link>
+          </button>
         </div>
       </aside>
     </>

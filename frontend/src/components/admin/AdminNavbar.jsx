@@ -1,10 +1,30 @@
+
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import "./AdminNavbar.css";
 
 function AdminNavbar({ title, subtitle }) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [search, setSearch] = useState("");
   const notificationRef = useRef(null);
+
+  const { logout, user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
+
+  const initials = user?.name
+    ? user.name
+        .split(" ")
+        .map((word) => word[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
+    : "AD";
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -52,6 +72,7 @@ function AdminNavbar({ title, subtitle }) {
 
         <div className="admin-notification-wrapper" ref={notificationRef}>
           <button
+            type="button"
             className="admin-notification-btn"
             onClick={() => setShowNotifications((prev) => !prev)}
             aria-label="Notifications"
@@ -94,12 +115,21 @@ function AdminNavbar({ title, subtitle }) {
         </div>
 
         <div className="admin-navbar-profile">
-          <div className="admin-navbar-avatar">AD</div>
+          <div className="admin-navbar-avatar">{initials}</div>
+
           <div className="admin-navbar-profile-info">
-            <strong>Administrator</strong>
+            <strong>{user?.name || "Administrator"}</strong>
             <small>Super Admin</small>
           </div>
         </div>
+
+        <button
+          type="button"
+          className="btn btn-outline-danger btn-sm"
+          onClick={handleLogout}
+        >
+          Logout
+        </button>
       </div>
     </header>
   );
