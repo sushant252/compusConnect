@@ -152,16 +152,17 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #f5b4b4;
+  color: #e70b0b;
   text-decoration: none;
   padding: 13px 12px;
   font-size: 13px;
   margin-top: 8px;
   border-radius: 8px;
+  border: none;
 }
 
 .admin-sidebar-logout:hover {
-  background: #3a2941;
+  background: red;
   color: white;
 }
 

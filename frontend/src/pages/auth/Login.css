@@ -1,0 +1,651 @@
+/* =====================================
+   CAMPUSCONNECT LOGIN PAGE
+===================================== */
+
+.campus-login-page {
+  min-height: 100vh;
+  width: 100%;
+  padding: 15px;
+  background: #f3f5fc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  box-sizing: border-box;
+}
+
+.campus-login-container {
+  width: 80%;
+  max-width: 1250px;
+  min-height: 610px;
+  display: grid;
+  grid-template-columns: 40% 60%;
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 15px 55px rgba(30, 58, 138, 0.10);
+}
+
+/* LEFT PANEL */
+
+.campus-login-sidebar {
+  position: relative;
+  overflow: hidden;
+  padding: 35px 34px 22px;
+  background: linear-gradient(
+    145deg,
+    #172554,
+    #1e3a8a 50%,
+    #4338ca
+  );
+  color: white;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+}
+
+.campus-login-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  z-index: 2;
+}
+
+.campus-login-brand-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.2);
+  font-size: 23px;
+}
+
+.campus-login-brand h3 {
+  font-size: 21px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.campus-login-brand span {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #c7d2fe;
+  font-weight: 700;
+}
+
+.campus-login-welcome {
+  position: relative;
+  z-index: 2;
+  margin-top: 100px;
+}
+
+.campus-login-eyebrow {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #a5f3fc;
+  font-weight: 800;
+}
+
+.campus-login-welcome h1 {
+  font-size: 39px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -1px;
+  margin: 17px 0;
+}
+
+.campus-login-welcome h1 span {
+  color: #93c5fd;
+}
+
+.campus-login-welcome p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #dbeafe;
+  max-width: 340px;
+}
+
+.campus-login-highlights {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  margin-top: 35px;
+}
+
+.campus-login-highlights div {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  font-size: 12px;
+  color: #e0e7ff;
+}
+
+.campus-login-highlights i {
+  width: 34px;
+  height: 34px;
+  background: rgba(255,255,255,.13);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #bfdbfe;
+  font-size: 16px;
+}
+
+.campus-login-sidebar-footer {
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+  padding-top: 35px;
+  font-size: 10px;
+  color: #c7d2fe;
+}
+
+.campus-login-circle {
+  position: absolute;
+  border-radius: 50%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.circle-one {
+  width: 330px;
+  height: 330px;
+  border: 1px solid rgba(255,255,255,.12);
+  right: -160px;
+  top: 180px;
+}
+
+.circle-two {
+  width: 230px;
+  height: 230px;
+  background: rgba(129,140,248,.10);
+  right: -100px;
+  bottom: -80px;
+}
+
+/* RIGHT PANEL */
+
+.campus-login-main {
+  padding: 40px 65px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+
+.campus-login-content {
+  width: 100%;
+  max-width: 440px;
+}
+
+.campus-login-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 35px;
+}
+
+.campus-login-tag {
+  display: inline-block;
+  background: #eef2ff;
+  color: #4f46e5;
+  font-size: 9px;
+  letter-spacing: 1.4px;
+  font-weight: 800;
+  padding: 6px 11px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.campus-login-header h2 {
+  font-size: 30px;
+  color: #172554;
+  font-weight: 800;
+  margin-bottom: 7px;
+}
+
+.campus-login-header p {
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.campus-login-user-icon {
+  width: 54px;
+  height: 54px;
+  background: linear-gradient(135deg, #e0e7ff, #ede9fe);
+  color: #4338ca;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+/* ROLE SELECTION */
+
+.campus-role-section {
+  margin-bottom: 25px;
+}
+
+.campus-login-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 750;
+  color: #334155;
+  margin-bottom: 10px;
+}
+
+.campus-role-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+}
+
+.campus-role-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 83px;
+  padding: 12px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8faff;
+  cursor: pointer;
+  transition: all .25s ease;
+}
+
+.campus-role-card input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.campus-role-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+}
+
+.student-role .campus-role-icon {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.admin-role .campus-role-icon {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+
+.campus-role-info h5 {
+  font-size: 12px;
+  font-weight: 800;
+  margin: 0 0 4px;
+  color: #1e293b;
+}
+
+.campus-role-info p {
+  font-size: 9px;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.campus-role-check {
+  width: 19px;
+  height: 19px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  flex-shrink: 0;
+  color: white;
+  font-size: 12px;
+  transition: .25s;
+}
+
+/* SELECTED STUDENT */
+
+.student-role.selected {
+  border-color: #3b82f6;
+  background: #eff6ff;
+  box-shadow: 0 0 0 3px rgba(59,130,246,.08);
+}
+
+.student-role.selected .campus-role-check {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+/* SELECTED ADMIN */
+
+.admin-role.selected {
+  border-color: #8b5cf6;
+  background: #f5f3ff;
+  box-shadow: 0 0 0 3px rgba(139,92,246,.08);
+}
+
+.admin-role.selected .campus-role-check {
+  background: #7c3aed;
+  border-color: #7c3aed;
+}
+
+.campus-role-card:hover {
+  transform: translateY(-2px);
+  border-color: #818cf8;
+}
+
+/* INPUT FIELDS */
+
+.campus-login-field {
+  margin-bottom: 20px;
+}
+
+.campus-login-input {
+  height: 47px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px;
+  background: #f8faff;
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+  transition: .25s;
+}
+
+.campus-login-input > i {
+  font-size: 16px;
+  color: #818cf8;
+}
+
+.campus-login-input input {
+  width: 100%;
+  height: 100%;
+  outline: none;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  color: #334155;
+}
+
+.campus-login-input input::placeholder {
+  color: #a0aabd;
+}
+
+.campus-login-input:focus-within {
+  border-color: #6366f1;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(99,102,241,.10);
+}
+
+/* ERROR */
+
+.campus-login-error {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  padding: 11px;
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  font-size: 11px;
+  margin-bottom: 15px;
+}
+
+/* LOGIN BUTTON */
+
+.campus-login-submit {
+  width: 100%;
+  height: 49px;
+  border: none;
+  border-radius: 9px;
+  background: linear-gradient(100deg, #2563eb, #4f46e5);
+  color: white;
+  font-size: 13px;
+  font-weight: 750;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(79,70,229,.20);
+  transition: .25s;
+}
+
+.campus-login-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 9px 22px rgba(79,70,229,.30);
+}
+
+.campus-login-submit:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+.campus-login-submit i {
+  font-size: 17px;
+}
+
+.campus-login-spinner {
+  width: 17px;
+  height: 17px;
+  border: 2px solid rgba(255,255,255,.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: loginSpin .7s linear infinite;
+}
+
+@keyframes loginSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* FOOTER */
+
+.campus-login-register {
+  text-align: center;
+  margin-top: 26px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.campus-login-register a {
+  color: #4338ca;
+  font-weight: 800;
+  text-decoration: none;
+  margin-left: 4px;
+}
+
+.campus-login-register a:hover {
+  text-decoration: underline;
+}
+
+.campus-login-security {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: #94a3b8;
+  font-size: 10px;
+  margin-top: 23px;
+}
+
+.campus-login-security i {
+  color: #16a34a;
+  font-size: 14px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+  .campus-login-container {
+    grid-template-columns: 36% 64%;
+  }
+
+  .campus-login-main {
+    padding: 35px 25px;
+  }
+
+  .campus-login-sidebar {
+    padding: 30px 22px;
+  }
+
+  .campus-login-welcome h1 {
+    font-size: 30px;
+  }
+
+  .campus-role-card {
+    padding: 9px;
+    gap: 7px;
+  }
+
+  .campus-role-icon {
+    width: 33px;
+    height: 33px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 650px) {
+  .campus-login-page {
+    padding: 0;
+  }
+
+  .campus-login-container {
+    grid-template-columns: 1fr;
+    border-radius: 0;
+    min-height: 100vh;
+  }
+
+  .campus-login-sidebar {
+    padding: 22px;
+  }
+
+  .campus-login-welcome {
+    margin-top: 30px;
+  }
+
+  .campus-login-welcome h1 {
+    font-size: 29px;
+  }
+
+  .campus-login-highlights {
+    margin-top: 15px;
+    gap: 12px;
+  }
+
+  .campus-login-sidebar-footer {
+    padding-top: 25px;
+  }
+
+  .campus-login-main {
+    padding: 30px 20px;
+  }
+
+  .campus-login-header {
+    margin-bottom: 25px;
+  }
+
+  .campus-login-header h2 {
+    font-size: 25px;
+  }
+}
+
+@media (max-width: 380px) {
+  .campus-role-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* COMPACT LAPTOP VIEW */
+
+@media (min-width: 651px) and (max-height: 750px) {
+  .campus-login-page {
+    padding: 8px;
+  }
+
+  .campus-login-container {
+    min-height: 0;
+  }
+
+  .campus-login-sidebar {
+    padding: 20px 25px 15px;
+  }
+
+  .campus-login-welcome {
+    margin-top: 45px;
+  }
+
+  .campus-login-welcome h1 {
+    font-size: 31px;
+    margin: 12px 0;
+  }
+
+  .campus-login-welcome p {
+    font-size: 11px;
+  }
+
+  .campus-login-highlights {
+    margin-top: 20px;
+    gap: 12px;
+  }
+
+  .campus-login-main {
+    padding: 20px 40px;
+  }
+
+  .campus-login-header {
+    margin-bottom: 18px;
+  }
+
+  .campus-login-header h2 {
+    font-size: 25px;
+  }
+
+  .campus-role-section {
+    margin-bottom: 17px;
+  }
+
+  .campus-role-card {
+    min-height: 65px;
+    padding: 8px;
+  }
+
+  .campus-login-field {
+    margin-bottom: 14px;
+  }
+
+  .campus-login-input {
+    height: 40px;
+  }
+
+  .campus-login-submit {
+    height: 43px;
+  }
+
+  .campus-login-register {
+    margin-top: 17px;
+  }
+
+  .campus-login-security {
+    margin-top: 12px;
+  }
+}

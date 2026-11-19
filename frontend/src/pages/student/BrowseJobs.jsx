@@ -7,14 +7,18 @@ import "./BrowseJobs.css";
 function BrowseJobs() {
     const [jobs, setJobs] = useState([]);
     const [appliedJobIds, setAppliedJobIds] = useState([]);
+
     const [search, setSearch] = useState("");
     const [location, setLocation] = useState("All");
     const [jobType, setJobType] = useState("All");
     const [salary, setSalary] = useState("All");
+
     const [selectedJob, setSelectedJob] = useState(null);
+    const [coverLetter, setCoverLetter] = useState("");
 
     const [loading, setLoading] = useState(true);
     const [applyingJobId, setApplyingJobId] = useState(null);
+
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
 
@@ -50,6 +54,7 @@ function BrowseJobs() {
                             .filter(Boolean)
                     );
                 }
+
             } catch (err) {
                 setError(err.message || "Unable to load jobs.");
             } finally {
@@ -60,6 +65,7 @@ function BrowseJobs() {
         fetchData();
     }, []);
 
+    // Format date
     const formatDate = (date) => {
         if (!date) return "Not specified";
 
@@ -70,6 +76,7 @@ function BrowseJobs() {
         });
     };
 
+    // Get company name
     const getCompanyName = (job) => {
         if (typeof job.company === "object") {
             return job.company?.name || "Company";
@@ -78,14 +85,34 @@ function BrowseJobs() {
         return "Company";
     };
 
+    // Get job type
     const getJobType = (type) => {
         if (type === "Full Time") return "Full-time";
         return type || "Not specified";
     };
 
+    // Get salary number
     const getSalaryNumber = (salaryText) => {
-        const match = String(salaryText || "").match(/\d+(\.\d+)?/);
+        const match = String(salaryText || "").match(/\d+(?:\.\d+)?/);
         return match ? Number(match[0]) : null;
+    };
+
+    // Open job details and prepare default application message
+    const openJobDetails = (job) => {
+        setError("");
+        setMessage("");
+
+        setCoverLetter(
+            `Dear Hiring Team,
+
+I am interested in applying for the ${job.title} position at ${getCompanyName(job)}.
+
+I believe my skills and knowledge make me a suitable candidate for this opportunity. I would appreciate the opportunity to be considered for this role.
+
+Thank you.`
+        );
+
+        setSelectedJob(job);
     };
 
     // Only open jobs with valid deadlines
@@ -120,14 +147,18 @@ function BrowseJobs() {
 
             const salaryMatch =
                 salary === "All" ||
-                (salaryNumber !== null &&
+                (
+                    salaryNumber !== null &&
                     (
                         (salary === "0-5" && salaryNumber <= 5) ||
-                        (salary === "5-8" &&
+                        (
+                            salary === "5-8" &&
                             salaryNumber > 5 &&
-                            salaryNumber <= 8) ||
+                            salaryNumber <= 8
+                        ) ||
                         (salary === "8+" && salaryNumber > 8)
-                    ));
+                    )
+                );
 
             return (
                 searchMatch &&
@@ -138,10 +169,15 @@ function BrowseJobs() {
         });
     }, [availableJobs, search, location, jobType, salary]);
 
-    // Apply for a job
+    // Apply for a job with cover letter
     const handleApply = async (job) => {
         if (appliedJobIds.includes(job._id)) {
             setMessage("You have already applied for this job.");
+            return;
+        }
+
+        if (!coverLetter.trim()) {
+            setError("Please write an application message.");
             return;
         }
 
@@ -151,7 +187,8 @@ function BrowseJobs() {
             setMessage("");
 
             const response = await API.post("/applications", {
-                jobId: job._id
+                jobId: job._id,
+                coverLetter: coverLetter.trim()
             });
 
             setAppliedJobIds((previous) => [
@@ -163,6 +200,10 @@ function BrowseJobs() {
                 response.data.message ||
                 "Application submitted successfully!"
             );
+
+            setSelectedJob(null);
+            setCoverLetter("");
+
         } catch (err) {
             setError(
                 err.response?.data?.message ||
@@ -173,6 +214,7 @@ function BrowseJobs() {
         }
     };
 
+    // Reset filters
     const resetFilters = () => {
         setSearch("");
         setLocation("All");
@@ -196,14 +238,20 @@ function BrowseJobs() {
                                 <span className="welcome-label">
                                     YOUR NEXT OPPORTUNITY
                                 </span>
-                                <h2>Find a job that fits your future.</h2>
+
+                                <h2>
+                                    Find a job that fits your future.
+                                </h2>
+
                                 <p>
                                     Discover openings from companies hiring
                                     through your campus.
                                 </p>
                             </div>
 
-                            <div className="jobs-welcome-icon">💼</div>
+                            <div className="jobs-welcome-icon">
+                                💼
+                            </div>
                         </div>
 
                         {/* Success and Error Messages */}
@@ -227,6 +275,7 @@ function BrowseJobs() {
                                     <label className="form-label">
                                         Search jobs
                                     </label>
+
                                     <input
                                         className="form-control"
                                         type="search"
@@ -242,6 +291,7 @@ function BrowseJobs() {
                                     <label className="form-label">
                                         Location
                                     </label>
+
                                     <select
                                         className="form-select"
                                         value={location}
@@ -249,13 +299,27 @@ function BrowseJobs() {
                                             setLocation(e.target.value)
                                         }
                                     >
-                                        <option value="All">All locations</option>
-                                        <option value="Noida">Noida</option>
-                                        <option value="Bangalore">Bangalore</option>
-                                        <option value="Gurugram">Gurugram</option>
-                                        <option value="Pune">Pune</option>
-                                        <option value="Remote">Remote</option>
-                                        <option value="Delhi">Delhi</option>
+                                        <option value="All">
+                                            All locations
+                                        </option>
+                                        <option value="Noida">
+                                            Noida
+                                        </option>
+                                        <option value="Bangalore">
+                                            Bangalore
+                                        </option>
+                                        <option value="Gurugram">
+                                            Gurugram
+                                        </option>
+                                        <option value="Pune">
+                                            Pune
+                                        </option>
+                                        <option value="Remote">
+                                            Remote
+                                        </option>
+                                        <option value="Delhi">
+                                            Delhi
+                                        </option>
                                     </select>
                                 </div>
 
@@ -263,6 +327,7 @@ function BrowseJobs() {
                                     <label className="form-label">
                                         Job type
                                     </label>
+
                                     <select
                                         className="form-select"
                                         value={jobType}
@@ -270,10 +335,18 @@ function BrowseJobs() {
                                             setJobType(e.target.value)
                                         }
                                     >
-                                        <option value="All">All types</option>
-                                        <option value="Full-time">Full-time</option>
-                                        <option value="Internship">Internship</option>
-                                        <option value="Part Time">Part Time</option>
+                                        <option value="All">
+                                            All types
+                                        </option>
+                                        <option value="Full-time">
+                                            Full-time
+                                        </option>
+                                        <option value="Internship">
+                                            Internship
+                                        </option>
+                                        <option value="Part Time">
+                                            Part Time
+                                        </option>
                                     </select>
                                 </div>
 
@@ -281,6 +354,7 @@ function BrowseJobs() {
                                     <label className="form-label">
                                         Salary
                                     </label>
+
                                     <select
                                         className="form-select"
                                         value={salary}
@@ -288,10 +362,18 @@ function BrowseJobs() {
                                             setSalary(e.target.value)
                                         }
                                     >
-                                        <option value="All">Any salary</option>
-                                        <option value="0-5">Up to 5 LPA</option>
-                                        <option value="5-8">5–8 LPA</option>
-                                        <option value="8+">Above 8 LPA</option>
+                                        <option value="All">
+                                            Any salary
+                                        </option>
+                                        <option value="0-5">
+                                            Up to 5 LPA
+                                        </option>
+                                        <option value="5-8">
+                                            5–8 LPA
+                                        </option>
+                                        <option value="8+">
+                                            Above 8 LPA
+                                        </option>
                                     </select>
                                 </div>
 
@@ -303,6 +385,7 @@ function BrowseJobs() {
                                         Reset filters
                                     </button>
                                 </div>
+
                             </div>
                         </div>
 
@@ -310,6 +393,7 @@ function BrowseJobs() {
                         <div className="jobs-results-heading">
                             <div>
                                 <h5>Available Opportunities</h5>
+
                                 <p className="text-muted mb-0">
                                     Showing {filteredJobs.length} of{" "}
                                     {availableJobs.length} jobs
@@ -325,13 +409,16 @@ function BrowseJobs() {
                         {loading ? (
                             <div className="jobs-empty-state">
                                 <h5>Loading jobs...</h5>
-                                <p>Please wait while we fetch available jobs.</p>
+                                <p>
+                                    Please wait while we fetch available jobs.
+                                </p>
                             </div>
                         ) : (
                             <>
                                 <div className="row g-4">
                                     {filteredJobs.map((job) => {
                                         const company = getCompanyName(job);
+
                                         const alreadyApplied =
                                             appliedJobIds.includes(job._id);
 
@@ -343,6 +430,7 @@ function BrowseJobs() {
                                                 key={job._id}
                                             >
                                                 <article className="browse-job-card">
+
                                                     <div className="browse-job-top">
                                                         <div className="company-logo">
                                                             {company.charAt(0).toUpperCase()}
@@ -362,9 +450,11 @@ function BrowseJobs() {
                                                         <span>
                                                             📍 {job.location}
                                                         </span>
+
                                                         <span>
                                                             ₹ {job.salary}
                                                         </span>
+
                                                         <span>
                                                             ⏳ Apply by{" "}
                                                             {formatDate(job.applicationDeadline)}
@@ -380,10 +470,11 @@ function BrowseJobs() {
                                                     </div>
 
                                                     <div className="browse-job-actions">
+
                                                         <button
                                                             className="btn btn-outline-primary"
                                                             onClick={() =>
-                                                                setSelectedJob(job)
+                                                                openJobDetails(job)
                                                             }
                                                         >
                                                             View Details
@@ -396,15 +487,14 @@ function BrowseJobs() {
                                                                 applyingJobId === job._id
                                                             }
                                                             onClick={() =>
-                                                                handleApply(job)
+                                                                openJobDetails(job)
                                                             }
                                                         >
                                                             {alreadyApplied
                                                                 ? "Applied ✓"
-                                                                : applyingJobId === job._id
-                                                                    ? "Applying..."
-                                                                    : "Apply Now →"}
+                                                                : "Apply Now →"}
                                                         </button>
+
                                                     </div>
                                                 </article>
                                             </div>
@@ -416,9 +506,11 @@ function BrowseJobs() {
                                     <div className="jobs-empty-state">
                                         <div>🔎</div>
                                         <h5>No jobs found</h5>
+
                                         <p>
                                             Try changing your search or filters.
                                         </p>
+
                                         <button
                                             className="btn btn-primary"
                                             onClick={resetFilters}
@@ -433,10 +525,11 @@ function BrowseJobs() {
                         <footer className="dashboard-footer">
                             © 2026 CampusConnect. All rights reserved.
                         </footer>
+
                     </section>
                 </main>
 
-                {/* Job Details Modal */}
+                {/* Job Details and Application Modal */}
                 {selectedJob && (
                     <div
                         className="job-modal-backdrop"
@@ -449,6 +542,7 @@ function BrowseJobs() {
                             aria-labelledby="job-modal-title"
                             onClick={(e) => e.stopPropagation()}
                         >
+
                             <button
                                 className="job-modal-close"
                                 onClick={() => setSelectedJob(null)}
@@ -507,6 +601,38 @@ function BrowseJobs() {
                                 )}
                             </div>
 
+                            {/* Application Message */}
+                            <div className="mt-4">
+                                <label className="form-label fw-semibold">
+                                    Application Message / Cover Letter
+                                </label>
+
+                                <textarea
+                                    className="form-control"
+                                    rows="6"
+                                    placeholder="Write why you are interested in this job..."
+                                    value={coverLetter}
+                                    onChange={(e) =>
+                                        setCoverLetter(e.target.value)
+                                    }
+                                    disabled={
+                                        appliedJobIds.includes(selectedJob._id)
+                                    }
+                                />
+
+                                <small className="text-muted">
+                                    Write a short message explaining why you
+                                    are interested in this position. Your
+                                    message will be shared with the company.
+                                </small>
+                            </div>
+
+                            {error && (
+                                <div className="alert alert-danger mt-3">
+                                    {error}
+                                </div>
+                            )}
+
                             <button
                                 className="btn btn-primary w-100 mt-4"
                                 disabled={
@@ -516,14 +642,16 @@ function BrowseJobs() {
                                 onClick={() => handleApply(selectedJob)}
                             >
                                 {appliedJobIds.includes(selectedJob._id)
-                                    ? "Applied ✓"
+                                    ? "Already Applied ✓"
                                     : applyingJobId === selectedJob._id
-                                        ? "Applying..."
-                                        : "Apply Now →"}
+                                        ? "Submitting Application..."
+                                        : "Submit Application →"}
                             </button>
+
                         </div>
                     </div>
                 )}
+
             </div>
         </StudentLayout>
     );

@@ -14,6 +14,7 @@ const formatDate = (date) => {
   });
 };
 
+// Convert backend application data into frontend format
 const mapApplication = (app) => ({
   id: app._id,
   studentId: app.student?._id,
@@ -23,12 +24,18 @@ const mapApplication = (app) => ({
   phone: app.student?.phone || "N/A",
   branch: app.student?.branch || "N/A",
   cgpa: app.student?.cgpa ?? "N/A",
+
   company: app.job?.company?.name || "Unknown Company",
   job: app.job?.title || "Unknown Job",
+
   appliedOn: formatDate(app.appliedAt || app.createdAt),
   status: app.status || "Pending",
+
   coverLetter: app.coverLetter || "",
-  resume: app.resume || "",
+
+  // Resume is stored in the Student/User document
+  resume: app.student?.resume || app.resume || "",
+
   jobId: app.job?._id,
 });
 
@@ -43,6 +50,7 @@ function ManageApplications() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  // Fetch applications when page loads
   useEffect(() => {
     fetchApplications();
   }, []);
@@ -66,6 +74,7 @@ function ManageApplications() {
     }
   };
 
+  // Search and filter applications
   const filteredApplications = useMemo(() => {
     return applications.filter((app) => {
       const query = search.toLowerCase();
@@ -83,6 +92,7 @@ function ManageApplications() {
     });
   }, [applications, search, statusFilter]);
 
+  // Application statistics
   const pendingCount = applications.filter(
     (app) => app.status === "Pending"
   ).length;
@@ -102,6 +112,7 @@ function ManageApplications() {
   const getStatusClass = (status) =>
     status.toLowerCase().replace(/\s+/g, "-");
 
+  // Update application status
   const updateStatus = async (id, newStatus) => {
     try {
       setUpdating(true);
@@ -135,9 +146,23 @@ function ManageApplications() {
     }
   };
 
+  // View student's uploaded resume
   const handleResume = async (application) => {
     if (!application.resume) {
-      setError("Resume is not available for this application.");
+      setError("Resume is not available for this student.");
+      return;
+    }
+
+    if (!application.studentId) {
+      setError("Student information is not available.");
+      return;
+    }
+
+    // Open a blank tab immediately to avoid popup blocking
+    const resumeWindow = window.open("about:blank", "_blank");
+
+    if (!resumeWindow) {
+      setError("Please allow pop-ups to view the student resume.");
       return;
     }
 
@@ -150,9 +175,16 @@ function ManageApplications() {
       );
 
       const fileURL = URL.createObjectURL(response.data);
-      window.open(fileURL, "_blank");
+
+      resumeWindow.location.href = fileURL;
+
     } catch (err) {
-      setError("Unable to open student resume.");
+      resumeWindow.close();
+
+      setError(
+        err.response?.data?.message ||
+        "Unable to open student resume."
+      );
     }
   };
 
@@ -162,6 +194,8 @@ function ManageApplications() {
       subtitle="Review and manage student placement applications"
     >
       <div className="manage-applications-page">
+
+        {/* Page Heading */}
         <div className="applications-heading">
           <div>
             <h2>Application Management</h2>
@@ -169,20 +203,29 @@ function ManageApplications() {
           </div>
         </div>
 
+        {/* Error Message */}
         {error && (
-          <div className="alert alert-danger">{error}</div>
+          <div className="alert alert-danger">
+            {error}
+          </div>
         )}
 
+        {/* Success Message */}
         {success && (
-          <div className="alert alert-success">{success}</div>
+          <div className="alert alert-success">
+            {success}
+          </div>
         )}
 
+        {/* Application Statistics */}
         <div className="application-stats-grid">
+
           <div className="application-stat-card">
             <div>
               <span>Total Applications</span>
               <h3>{applications.length}</h3>
             </div>
+
             <div className="application-stat-icon blue">
               <i className="bi bi-file-earmark-text"></i>
             </div>
@@ -193,6 +236,7 @@ function ManageApplications() {
               <span>Pending Review</span>
               <h3>{pendingCount}</h3>
             </div>
+
             <div className="application-stat-icon orange">
               <i className="bi bi-clock-history"></i>
             </div>
@@ -203,6 +247,7 @@ function ManageApplications() {
               <span>Shortlisted</span>
               <h3>{shortlistedCount}</h3>
             </div>
+
             <div className="application-stat-icon purple">
               <i className="bi bi-star"></i>
             </div>
@@ -213,16 +258,23 @@ function ManageApplications() {
               <span>Selected</span>
               <h3>{selectedCount}</h3>
             </div>
+
             <div className="application-stat-icon green">
               <i className="bi bi-check-circle"></i>
             </div>
           </div>
+
         </div>
 
+        {/* Applications Table */}
         <div className="applications-table-card">
+
+          {/* Search and Status Filter */}
           <div className="applications-toolbar">
+
             <div className="applications-search">
               <i className="bi bi-search"></i>
+
               <input
                 type="text"
                 placeholder="Search student, company or job..."
@@ -241,10 +293,14 @@ function ManageApplications() {
               <option value="Rejected">Rejected</option>
               <option value="Selected">Selected</option>
             </select>
+
           </div>
 
+          {/* Table */}
           <div className="table-responsive">
+
             <table className="table applications-admin-table align-middle">
+
               <thead>
                 <tr>
                   <th>Student</th>
@@ -257,52 +313,64 @@ function ManageApplications() {
               </thead>
 
               <tbody>
+
                 {loading ? (
                   <tr>
                     <td colSpan="6" className="applications-empty">
                       Loading applications...
                     </td>
                   </tr>
-                ) : filteredApplications.map((app) => (
-                  <tr key={app.id}>
-                    <td>
-                      <div className="application-student-name">
-                        {app.student}
-                      </div>
-                      <div className="application-enrollment">
-                        {app.enrollment}
-                      </div>
-                    </td>
+                ) : (
+                  filteredApplications.map((app) => (
+                    <tr key={app.id}>
 
-                    <td>
-                      <div className="application-company">
-                        {app.company}
-                      </div>
-                      <div className="application-job">{app.job}</div>
-                    </td>
+                      <td>
+                        <div className="application-student-name">
+                          {app.student}
+                        </div>
 
-                    <td><strong>{app.cgpa}</strong></td>
-                    <td>{app.appliedOn}</td>
+                        <div className="application-enrollment">
+                          {app.enrollment}
+                        </div>
+                      </td>
 
-                    <td>
-                      <span
-                        className={`application-status ${getStatusClass(app.status)}`}
-                      >
-                        {app.status}
-                      </span>
-                    </td>
+                      <td>
+                        <div className="application-company">
+                          {app.company}
+                        </div>
 
-                    <td>
-                      <button
-                        className="application-view-btn"
-                        title="View Application"
-                        onClick={() => setSelectedApplication(app)}
-                      >
-                        <i className="bi bi-eye"></i>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                        <div className="application-job">
+                          {app.job}
+                        </div>
+                      </td>
+
+                      <td>
+                        <strong>{app.cgpa}</strong>
+                      </td>
+
+                      <td>{app.appliedOn}</td>
+
+                      <td>
+                        <span
+                          className={`application-status ${getStatusClass(app.status)}`}
+                        >
+                          {app.status}
+                        </span>
+                      </td>
+
+                      <td>
+                        <button
+                          className="application-view-btn"
+                          title="View Application"
+                          onClick={() => setSelectedApplication(app)}
+                        >
+                          <i className="bi bi-eye"></i>
+                        </button>
+                      </td>
+
+                    </tr>
+                  ))
+                )}
 
                 {!loading && filteredApplications.length === 0 && (
                   <tr>
@@ -311,21 +379,28 @@ function ManageApplications() {
                     </td>
                   </tr>
                 )}
+
               </tbody>
             </table>
+
           </div>
         </div>
 
+        {/* Application Details Modal */}
         {selectedApplication && (
           <div
             className="application-modal-overlay"
             onClick={() => setSelectedApplication(null)}
           >
+
             <div
               className="application-modal"
               onClick={(e) => e.stopPropagation()}
             >
+
+              {/* Modal Header */}
               <div className="application-modal-header">
+
                 <div>
                   <h4>Application Details</h4>
                   <p>Review student application information.</p>
@@ -337,9 +412,12 @@ function ManageApplications() {
                 >
                   &times;
                 </button>
+
               </div>
 
+              {/* Student and Job Details */}
               <div className="application-detail-content">
+
                 <div>
                   <span>Student Name</span>
                   <strong>{selectedApplication.student}</strong>
@@ -385,31 +463,61 @@ function ManageApplications() {
                   <strong>{selectedApplication.appliedOn}</strong>
                 </div>
 
-                <div>
-                  <span>Cover Letter</span>
-                  <strong>
-                    {selectedApplication.coverLetter || "Not provided"}
-                  </strong>
-                </div>
               </div>
 
-              {selectedApplication.resume && (
-                <button
-                  className="application-view-btn mt-3"
-                  onClick={() => handleResume(selectedApplication)}
-                >
-                  <i className="bi bi-file-earmark-pdf"></i> View Resume
-                </button>
-              )}
+              {/* Cover Letter */}
+              <div className="application-cover-letter mt-4">
 
-              <div className="application-status-update">
+                <h6>Application Message / Cover Letter</h6>
+
+                <p style={{ whiteSpace: "pre-wrap" }}>
+                  {selectedApplication.coverLetter || "Not provided"}
+                </p>
+
+              </div>
+
+              {/* Student Resume */}
+              <div className="application-resume-section mt-4">
+
+                <h6>Student Resume</h6>
+
+                {selectedApplication.resume ? (
+                  <div>
+                    <p className="text-success mb-2">
+                      <i className="bi bi-check-circle-fill"></i>
+                      {" "}Resume uploaded
+                    </p>
+
+                    <button
+                      className="application-view-btn2 mt-2"
+                      onClick={() => handleResume(selectedApplication)}
+                    >
+                      <i className="bi bi-file-earmark-pdf"></i>
+                     {" "} View Student Resume
+                    </button>
+                  </div>
+                ) : (
+                  <p className="text-muted mb-0">
+                    <i className="bi bi-exclamation-circle"></i>
+                    {" "}Student has not uploaded a resume.
+                  </p>
+                )}
+
+              </div>
+
+              {/* Update Application Status */}
+              <div className="application-status-update mt-4">
+
                 <label>Update Application Status</label>
 
                 <select
                   value={selectedApplication.status}
                   disabled={updating}
                   onChange={(e) =>
-                    updateStatus(selectedApplication.id, e.target.value)
+                    updateStatus(
+                      selectedApplication.id,
+                      e.target.value
+                    )
                   }
                 >
                   <option value="Pending">Pending</option>
@@ -417,18 +525,24 @@ function ManageApplications() {
                   <option value="Rejected">Rejected</option>
                   <option value="Selected">Selected</option>
                 </select>
+
               </div>
 
+              {/* Modal Footer */}
               <div className="application-modal-footer">
+
                 <button
                   onClick={() => setSelectedApplication(null)}
                 >
                   Done
                 </button>
+
               </div>
+
             </div>
           </div>
         )}
+
       </div>
     </AdminLayout>
   );

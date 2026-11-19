@@ -191,11 +191,18 @@
   border: none;
   background: #eff6ff;
   color: #2563eb;
-  width: 33px;
-  height: 33px;
+  width: 53px;
+  height: 43px;
   border-radius: 7px;
 }
-
+.application-view-btn2 {
+  border: none;
+  background: #eff6ff;
+  color: #2563eb;
+  width: 200px;
+  height: 43px;
+  border-radius: 7px;
+}
 .applications-empty {
   text-align: center;
   padding: 35px !important;
@@ -215,19 +222,19 @@
 
 .application-modal {
   width: 100%;
-  max-width: 550px;
+  max-width: 650px;
   max-height: 90vh;
   overflow-y: auto;
   background: white;
   border-radius: 14px;
-  padding: 25px;
+  padding: 35px;
 }
 
 .application-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 22px;
+  margin-bottom: 38px;
 }
 
 .application-modal-header h4 {

@@ -1,10 +1,5 @@
 
-import React, {
-    createContext,
-    useContext,
-    useEffect,
-    useState
-} from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 import API from "../services/api";
 

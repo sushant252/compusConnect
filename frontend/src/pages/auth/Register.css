@@ -1,0 +1,578 @@
+/* =====================================
+   CAMPUSCONNECT REGISTRATION PAGE
+===================================== */
+
+.campus-register-page {
+  min-height: 100vh;
+  width: 100%;
+  padding: 22px;
+  background: #f3f5fc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Inter", "Segoe UI", sans-serif;
+  box-sizing: border-box;
+}
+
+.campus-register-container {
+  width: 90%;
+  max-width: 1450px;
+  min-height: 660px;
+  background: #ffffff;
+  display: grid;
+  grid-template-columns: 36% 64%;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 15px 55px rgba(30, 58, 138, 0.10);
+}
+
+/* =====================================
+   LEFT SIDEBAR
+===================================== */
+
+.campus-register-sidebar {
+  position: relative;
+  overflow: hidden;
+  padding: 18px 25px 15px;
+  background: linear-gradient(
+    145deg,
+    #172554 0%,
+    #1e3a8a 48%,
+    #4338ca 100%
+  );
+  color: white;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+}
+
+.campus-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 2;
+}
+
+.campus-brand-logo {
+  width: 49px;
+  height: 49px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+  color: white;
+}
+
+.campus-brand h3 {
+  font-size: 15px;
+  font-weight: 550;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.campus-brand span {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #c7d2fe;
+  font-weight: 700;
+}
+
+.campus-welcome {
+  position: relative;
+  z-index: 2;
+  margin-top: 25px;
+}
+
+.campus-eyebrow {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #a5f3fc;
+  margin-bottom: 19px;
+}
+
+.campus-welcome h1 {
+  font-size: clamp(12px, 3vw, 30px);
+  font-weight: 800;
+  line-height: 1.22;
+  letter-spacing: -1.5px;
+  color: #ffffff;
+  margin-bottom: 22px;
+}
+
+.campus-welcome h1 span {
+  color: #93c5fd;
+}
+
+.campus-welcome p {
+  color: #dbeafe;
+  font-size: 14px;
+  line-height: 1.9;
+  max-width: 360px;
+  margin-bottom: 0;
+}
+
+/* FEATURES */
+
+.campus-feature-list {
+  position: relative;
+  z-index: 2;
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 23px;
+}
+
+.campus-feature {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.campus-feature-icon {
+  width: 33px;
+  height: 33px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  font-size: 18px;
+  color: #bfdbfe;
+}
+
+.campus-feature h6 {
+  font-size: 10px;
+  font-weight: 700;
+  margin: 0 0 5px;
+  color: white;
+}
+
+.campus-feature p {
+  font-size: 11px;
+  color: #c7d2fe;
+  margin: 0;
+}
+
+.campus-sidebar-footer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 40px;
+  color: #c7d2fe;
+  font-size: 10px;
+}
+
+/* BACKGROUND DECORATIONS */
+
+.campus-decoration {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.campus-circle-one {
+  width: 330px;
+  height: 330px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  right: -150px;
+  top: 180px;
+}
+
+.campus-circle-two {
+  width: 230px;
+  height: 230px;
+  background: rgba(129, 140, 248, 0.10);
+  right: -110px;
+  bottom: -80px;
+}
+
+/* =====================================
+   RIGHT FORM AREA
+===================================== */
+
+.campus-register-main {
+  padding: 22px 35px 18px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+.campus-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 29px;
+}
+
+.campus-form-tag {
+  display: inline-block;
+  color: #4f46e5;
+  background: #eef2ff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+  margin-bottom: 12px;
+}
+
+.campus-form-header h2 {
+  color: #172554;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+  margin-bottom: 5px;
+}
+
+.campus-form-header p {
+  font-size: 12px;
+  color: #7b8499;
+  margin: 0;
+}
+
+.campus-user-icon {
+  width: 47px;
+  height: 47px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #e0e7ff, #ede9fe);
+  color: #4338ca;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =====================================
+   FORM SECTIONS
+===================================== */
+
+.campus-form-section {
+  margin-bottom: 10px;
+}
+
+.campus-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.campus-section-icon {
+  width: 27px;
+  height: 27px;
+  background: #eef2ff;
+  color: #4338ca;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+}
+
+.campus-section-heading h5 {
+  color: #1e293b;
+  font-size: 12px;
+  font-weight: 750;
+  margin: 0 0 1px;
+}
+
+.campus-section-heading p {
+  font-size: 11px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+/* INPUT LABELS */
+
+.campus-label {
+  display: block;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.campus-label span {
+  color: #ef4444;
+}
+
+/* INPUT DESIGN */
+
+.campus-input-wrapper {
+  width: 100%;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  background: #f8faff;
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+  padding: 0 13px;
+  transition: all 0.25s ease;
+}
+
+.campus-input-wrapper > i {
+  color: #818cf8;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.campus-input-wrapper input,
+.campus-input-wrapper select {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  outline: none;
+  border: none;
+  background: transparent;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: none;
+}
+
+.campus-input-wrapper input::placeholder {
+  color: #a0aabd;
+  font-weight: 400;
+}
+
+.campus-input-wrapper select {
+  cursor: pointer;
+}
+
+.campus-input-wrapper:focus-within {
+  background: #ffffff;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.10);
+}
+
+/* =====================================
+   ERROR MESSAGE
+===================================== */
+
+.campus-error-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 15px;
+  border-radius: 9px;
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  font-size: 12px;
+  margin-bottom: 15px;
+}
+
+/* =====================================
+   SUBMIT BUTTON
+===================================== */
+
+.campus-submit-btn {
+  width: 100%;
+  min-height: 49px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(100deg, #2563eb, #4f46e5);
+  color: white;
+  font-size: 13px;
+  font-weight: 750;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  box-shadow: 0 6px 17px rgba(79, 70, 229, 0.20);
+  transition: all 0.25s ease;
+}
+
+.campus-submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 9px 22px rgba(79, 70, 229, 0.30);
+}
+
+.campus-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.campus-submit-btn i {
+  font-size: 17px;
+}
+
+.campus-spinner {
+  width: 17px;
+  height: 17px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: campusSpin 0.7s linear infinite;
+}
+
+@keyframes campusSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =====================================
+   LOGIN FOOTER
+===================================== */
+
+.campus-login-footer {
+  text-align: center;
+  color: #64748b;
+  font-size: 12px;
+  margin-top: 23px;
+}
+
+.campus-login-footer a {
+  color: #4338ca;
+  font-weight: 800;
+  text-decoration: none;
+  margin-left: 4px;
+}
+
+.campus-login-footer a:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.campus-bottom-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: #94a3b8;
+  font-size: 10px;
+  margin-top: 18px;
+}
+
+.campus-bottom-note i {
+  color: #16a34a;
+  font-size: 14px;
+}
+
+/* =====================================
+   RESPONSIVE DESIGN
+===================================== */
+
+@media (max-width: 1100px) {
+  .campus-register-container {
+    grid-template-columns: 32% 68%;
+  }
+
+  .campus-register-main {
+    padding: 35px 32px;
+  }
+
+  .campus-register-sidebar {
+    padding: 32px 25px 25px;
+  }
+
+  .campus-welcome h1 {
+    font-size: 34px;
+  }
+}
+
+@media (max-width: 768px) {
+  .campus-register-page {
+    padding: 12px;
+    align-items: flex-start;
+  }
+
+  .campus-register-container {
+    grid-template-columns: 1fr;
+    border-radius: 16px;
+  }
+
+  .campus-register-sidebar {
+    min-height: auto;
+    padding: 25px;
+  }
+
+  .campus-welcome {
+    margin-top: 30px;
+  }
+
+  .campus-welcome h1 {
+    font-size: 32px;
+  }
+
+  .campus-welcome p {
+    font-size: 13px;
+  }
+
+  .campus-feature-list {
+    margin-top: 25px;
+    gap: 17px;
+  }
+
+  .campus-sidebar-footer {
+    padding-top: 25px;
+  }
+
+  .campus-register-main {
+    padding: 30px 23px;
+  }
+
+  .campus-form-header h2 {
+    font-size: 25px;
+  }
+}
+
+@media (max-width: 480px) {
+  .campus-register-page {
+    padding: 0;
+  }
+
+  .campus-register-container {
+    border-radius: 0;
+  }
+
+  .campus-register-sidebar {
+    padding: 23px 20px;
+  }
+
+  .campus-brand h3 {
+    font-size: 19px;
+  }
+
+  .campus-welcome h1 {
+    font-size: 29px;
+  }
+
+  .campus-register-main {
+    padding: 26px 18px;
+  }
+
+  .campus-form-header {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .campus-form-header h2 {
+    font-size: 23px;
+  }
+
+  .campus-user-icon {
+    width: 43px;
+    height: 43px;
+    font-size: 20px;
+  }
+
+  .campus-input-wrapper {
+    height: 45px;
+  }
+}

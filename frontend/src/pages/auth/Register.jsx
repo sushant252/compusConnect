@@ -1,7 +1,7 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import "./Register.css";
 
 function Register() {
   const navigate = useNavigate();
@@ -69,244 +69,399 @@ function Register() {
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-card" style={{ maxWidth: "650px" }}>
+    <div className="campus-register-page">
 
-        <div className="d-flex align-items-center gap-3 mb-4">
-          <div className="brand-icon">C</div>
-          <div>
-            <h4 className="fw-bold mb-0">CampusConnect</h4>
-            <small className="text-muted">
-              College Placement Portal
-            </small>
-          </div>
-        </div>
+      <div className="campus-register-container">
 
-        <h3 className="fw-bold mb-2">Create Student Account</h3>
+        {/* LEFT BRANDING PANEL */}
+        <aside className="campus-register-sidebar">
 
-        <p className="auth-subtitle mb-4">
-          Register yourself to explore placement opportunities.
-        </p>
-
-        <form onSubmit={handleSubmit}>
-
-          <h6 className="fw-bold mb-3 text-primary">
-            Personal Information
-          </h6>
-
-          <div className="row">
-            <div className="col-md-6 mb-3">
-              <label className="form-label fw-semibold">
-                Full Name *
-              </label>
-
-              <input
-                type="text"
-                className="form-control"
-                name="name"
-                placeholder="Enter full name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
+          <div className="campus-brand">
+            <div className="campus-brand-logo">
+              <i className="bi bi-mortarboard-fill"></i>
             </div>
 
-            <div className="col-md-6 mb-3">
-              <label className="form-label fw-semibold">
-                Phone Number *
-              </label>
-
-              <input
-                type="tel"
-                className="form-control"
-                name="phone"
-                placeholder="10 digit mobile number"
-                pattern="[0-9]{10}"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-              />
+            <div>
+              <h3>CampusConnect</h3>
+              <span>PLACEMENT PORTAL</span>
             </div>
           </div>
 
-          <div className="mb-3">
-            <label className="form-label fw-semibold">
-              Email Address *
-            </label>
+          <div className="campus-welcome">
+            <span className="campus-eyebrow">
+              YOUR CAREER STARTS HERE
+            </span>
 
-            <input
-              type="email"
-              className="form-control"
-              name="email"
-              placeholder="Enter college or personal email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
+            <h1>
+              Turn Your
+              <br />
+              <span>Dreams</span> Into
+              <br />
+              Opportunities.
+            </h1>
+
+            <p>
+              Connect with top recruiters, discover exciting
+              opportunities and take the next step towards
+              your dream career.
+            </p>
           </div>
 
-          <hr className="my-4" />
+          <div className="campus-feature-list">
 
-          <h6 className="fw-bold mb-3 text-primary">
-            Academic Information
-          </h6>
-
-          <div className="row">
-            <div className="col-md-6 mb-3">
-              <label className="form-label fw-semibold">
-                Enrollment Number *
-              </label>
-
-              <input
-                type="text"
-                className="form-control"
-                name="enrollmentNumber"
-                placeholder="Enter enrollment number"
-                value={formData.enrollmentNumber}
-                onChange={handleChange}
-                required
-              />
+            <div className="campus-feature">
+              <div className="campus-feature-icon">
+                <i className="bi bi-briefcase-fill"></i>
+              </div>
+              <div>
+                <h6>Top Placement Opportunities</h6>
+                <p>Explore exciting career opportunities.</p>
+              </div>
             </div>
 
-            <div className="col-md-6 mb-3">
-              <label className="form-label fw-semibold">
-                Branch *
-              </label>
-
-              <select
-                className="form-select form-control"
-                name="branch"
-                value={formData.branch}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Select Branch</option>
-                <option value="Computer Science">Computer Science</option>
-                <option value="Information Technology">Information Technology</option>
-                <option value="Electronics">Electronics</option>
-                <option value="Mechanical">Mechanical</option>
-                <option value="Civil">Civil</option>
-                <option value="Electrical">Electrical</option>
-                <option value="Other">Other</option>
-              </select>
+            <div className="campus-feature">
+              <div className="campus-feature-icon">
+                <i className="bi bi-buildings-fill"></i>
+              </div>
+              <div>
+                <h6>Connect With Companies</h6>
+                <p>Get connected with leading recruiters.</p>
+              </div>
             </div>
 
-            <div className="col-md-6 mb-3">
-              <label className="form-label fw-semibold">
-                Current CGPA *
-              </label>
-
-              <input
-                type="number"
-                className="form-control"
-                name="cgpa"
-                placeholder="Example: 8.5"
-                min="0"
-                max="10"
-                step="0.01"
-                value={formData.cgpa}
-                onChange={handleChange}
-                required
-              />
+            <div className="campus-feature">
+              <div className="campus-feature-icon">
+                <i className="bi bi-graph-up-arrow"></i>
+              </div>
+              <div>
+                <h6>Build Your Career</h6>
+                <p>Showcase your academic achievements.</p>
+              </div>
             </div>
 
-            <div className="col-md-6 mb-3">
-              <label className="form-label fw-semibold">
-                Graduation Year *
-              </label>
-
-              <select
-                className="form-select form-control"
-                name="graduationYear"
-                value={formData.graduationYear}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Select Year</option>
-                {Array.from({ length: 8 }, (_, i) => 2026 + i).map(
-                  (year) => (
-                    <option key={year} value={year}>
-                      {year}
-                    </option>
-                  )
-                )}
-              </select>
-            </div>
           </div>
 
-          <hr className="my-4" />
-
-          <h6 className="fw-bold mb-3 text-primary">
-            Account Security
-          </h6>
-
-          <div className="row">
-            <div className="col-md-6 mb-3">
-              <label className="form-label fw-semibold">
-                Password *
-              </label>
-
-              <input
-                type="password"
-                className="form-control"
-                name="password"
-                placeholder="Minimum 8 characters"
-                minLength="8"
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="col-md-6 mb-3">
-              <label className="form-label fw-semibold">
-                Confirm Password *
-              </label>
-
-              <input
-                type="password"
-                className="form-control"
-                name="confirmPassword"
-                placeholder="Re-enter password"
-                minLength="8"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          <div className="campus-sidebar-footer">
+            <span>© 2026 CampusConnect</span>
+            <span>Empowering Future Professionals</span>
           </div>
 
-          {error && (
-            <div className="alert alert-danger" role="alert">
-              {error}
+          <div className="campus-decoration campus-circle-one"></div>
+          <div className="campus-decoration campus-circle-two"></div>
+
+        </aside>
+
+        {/* RIGHT REGISTRATION PANEL */}
+        <main className="campus-register-main">
+
+          <div className="campus-form-header">
+
+            <div>
+              <span className="campus-form-tag">
+                STUDENT REGISTRATION
+              </span>
+
+              <h2>Create Your Account</h2>
+
+              <p>
+                Fill in your details and get ready for your
+                placement journey.
+              </p>
             </div>
-          )}
 
-          <button
-            type="submit"
-            className="btn btn-primary w-100 mt-2"
-            disabled={loading}
-          >
-            {loading ? "Creating Account..." : "Create Account"}
-          </button>
+            <div className="campus-user-icon">
+              <i className="bi bi-person-plus-fill"></i>
+            </div>
 
-        </form>
+          </div>
 
-        <div className="text-center mt-4">
-          <span className="text-muted">
-            Already have an account?{" "}
-          </span>
+          <form onSubmit={handleSubmit}>
 
-          <Link to="/login" className="fw-semibold">
-            Login
-          </Link>
-        </div>
+            {/* PERSONAL INFORMATION */}
+            <div className="campus-form-section">
 
-        <p className="text-center text-muted small mt-4 mb-0">
-          © 2026 CampusConnect. All rights reserved.
-        </p>
+              <div className="campus-section-heading">
+                <span className="campus-section-icon">
+                  <i className="bi bi-person-vcard"></i>
+                </span>
+
+                <div>
+                  <h5>Personal Information</h5>
+                  <p>Your basic contact details</p>
+                </div>
+              </div>
+
+              <div className="row g-3">
+
+                <div className="col-md-6">
+                  <label className="campus-label">
+                    Full Name <span>*</span>
+                  </label>
+
+                  <div className="campus-input-wrapper">
+                    <i className="bi bi-person"></i>
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Enter your full name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="col-md-6">
+                  <label className="campus-label">
+                    Phone Number <span>*</span>
+                  </label>
+
+                  <div className="campus-input-wrapper">
+                    <i className="bi bi-telephone"></i>
+                    <input
+                      type="tel"
+                      name="phone"
+                      placeholder="10 digit mobile number"
+                      pattern="[0-9]{10}"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="col-12">
+                  <label className="campus-label">
+                    Email Address <span>*</span>
+                  </label>
+
+                  <div className="campus-input-wrapper">
+                    <i className="bi bi-envelope"></i>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Enter your college or personal email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            {/* ACADEMIC INFORMATION */}
+            <div className="campus-form-section">
+
+              <div className="campus-section-heading">
+                <span className="campus-section-icon">
+                  <i className="bi bi-mortarboard"></i>
+                </span>
+
+                <div>
+                  <h5>Academic Information</h5>
+                  <p>Your college and academic details</p>
+                </div>
+              </div>
+
+              <div className="row g-3">
+
+                <div className="col-md-6">
+                  <label className="campus-label">
+                    Enrollment Number <span>*</span>
+                  </label>
+
+                  <div className="campus-input-wrapper">
+                    <i className="bi bi-card-text"></i>
+                    <input
+                      type="text"
+                      name="enrollmentNumber"
+                      placeholder="Enter enrollment number"
+                      value={formData.enrollmentNumber}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="col-md-6">
+                  <label className="campus-label">
+                    Branch <span>*</span>
+                  </label>
+
+                  <div className="campus-input-wrapper">
+                    <i className="bi bi-diagram-3"></i>
+
+                    <select
+                      name="branch"
+                      value={formData.branch}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">Select your branch</option>
+                      <option value="Computer Science">Computer Science</option>
+                      <option value="Information Technology">Information Technology</option>
+                      <option value="Electronics">Electronics</option>
+                      <option value="Mechanical">Mechanical</option>
+                      <option value="Civil">Civil</option>
+                      <option value="Electrical">Electrical</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="col-md-6">
+                  <label className="campus-label">
+                    Current CGPA <span>*</span>
+                  </label>
+
+                  <div className="campus-input-wrapper">
+                    <i className="bi bi-award"></i>
+                    <input
+                      type="number"
+                      name="cgpa"
+                      placeholder="Example: 8.5"
+                      min="0"
+                      max="10"
+                      step="0.01"
+                      value={formData.cgpa}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="col-md-6">
+                  <label className="campus-label">
+                    Graduation Year <span>*</span>
+                  </label>
+
+                  <div className="campus-input-wrapper">
+                    <i className="bi bi-calendar-event"></i>
+
+                    <select
+                      name="graduationYear"
+                      value={formData.graduationYear}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">Select graduation year</option>
+
+                      {Array.from({ length: 8 }, (_, i) => 2026 + i).map(
+                        (year) => (
+                          <option key={year} value={year}>
+                            {year}
+                          </option>
+                        )
+                      )}
+                    </select>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            {/* ACCOUNT SECURITY */}
+            <div className="campus-form-section">
+
+              <div className="campus-section-heading">
+                <span className="campus-section-icon">
+                  <i className="bi bi-shield-lock"></i>
+                </span>
+
+                <div>
+                  <h5>Account Security</h5>
+                  <p>Keep your account safe and secure</p>
+                </div>
+              </div>
+
+              <div className="row g-3">
+
+                <div className="col-md-6">
+                  <label className="campus-label">
+                    Password <span>*</span>
+                  </label>
+
+                  <div className="campus-input-wrapper">
+                    <i className="bi bi-lock"></i>
+                    <input
+                      type="password"
+                      name="password"
+                      placeholder="Minimum 8 characters"
+                      minLength="8"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="col-md-6">
+                  <label className="campus-label">
+                    Confirm Password <span>*</span>
+                  </label>
+
+                  <div className="campus-input-wrapper">
+                    <i className="bi bi-lock-fill"></i>
+                    <input
+                      type="password"
+                      name="confirmPassword"
+                      placeholder="Re-enter your password"
+                      minLength="8"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            {/* ERROR MESSAGE */}
+            {error && (
+              <div className="campus-error-message" role="alert">
+                <i className="bi bi-exclamation-circle-fill"></i>
+                {error}
+              </div>
+            )}
+
+            {/* SUBMIT BUTTON */}
+            <button
+              type="submit"
+              className="campus-submit-btn"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <span className="campus-spinner"></span>
+                  Creating Account...
+                </>
+              ) : (
+                <>
+                  Create Student Account
+                  <i className="bi bi-arrow-right"></i>
+                </>
+              )}
+            </button>
+
+          </form>
+
+          <div className="campus-login-footer">
+            Already have an account?
+            <Link to="/login"> Login Now</Link>
+          </div>
+
+          <div className="campus-bottom-note">
+            <i className="bi bi-shield-check"></i>
+            Your information is protected and secure.
+          </div>
+
+        </main>
 
       </div>
+
     </div>
   );
 }

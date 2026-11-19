@@ -161,7 +161,14 @@ function AdminDashboard() {
                     activities.map((activity) => (
                       <tr key={activity.id}>
                         <td>
-                          <strong>{activity.name}</strong>
+                          <strong>
+                            {typeof activity.student === "object"
+                              ? activity.student?.name || "Unknown Student"
+                              : activity.studentName ||
+                                activity.student ||
+                                activity.name ||
+                                "Unknown Student"}
+                          </strong>
                         </td>
 
                         <td>{activity.action}</td>

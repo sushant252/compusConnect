@@ -123,13 +123,7 @@ function AdminNavbar({ title, subtitle }) {
           </div>
         </div>
 
-        <button
-          type="button"
-          className="btn btn-outline-danger btn-sm"
-          onClick={handleLogout}
-        >
-          Logout
-        </button>
+       
       </div>
     </header>
   );
